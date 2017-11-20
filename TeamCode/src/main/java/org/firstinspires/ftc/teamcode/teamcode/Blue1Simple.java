@@ -56,29 +56,32 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @Autonomous(name="Omnibot: Blue1Simple", group="Omnibot")
 //@Disabled
-public class Blue1Simple extends LinearOpMode {
+public class Blue1Simple extends AutoPull {
 
     HardwareOmniRobot robot   = new HardwareOmniRobot();
     AutoPull robotauto = new AutoPull();
     ElapsedTime runtime = new ElapsedTime();
 
     @Override public void runOpMode() throws InterruptedException {
-        robot.init(hardwareMap);
-        robot.navx_device.zeroYaw();
-        robot.NavXInit(0);
-        //robot.yawPIDResult = new navXPIDController.PIDResult();
+        robot.init(hardwareMap, false);
+
+        robot.grabber.setPower(0.75);
+        robot.grabber.setTargetPosition(1485);
 
         telemetry.addData("Status", "Ready to run");
         telemetry.update();
 
+
         waitForStart();
         runtime.reset();
 
-        robot.JewelKnock("blue");
-        robot.DriveFor(0.3,0.0,0.0,0.0);
-        robot.DriveFor(1.2,1.0,0.0,0.0);
-        robot.DriveFor(0.3,0.0,0.0,0.0);
-        robot.grabber.setTargetPosition(0);
+        JewelKnock(robot,"blue");
+        DriveFor(robot,0.3,0.0,0.0,0.0);
+        if(robot.jknock.getPosition() != 0.7) {robot.jknock.setPosition(0.7);}
+        robot.wheelie.setPower(1);
+        DriveFor(robot,1.2,1.0,0.0,0.0);
+        robot.wheelie.setPower(0);
+        DriveFor(robot,0.3,0.0,0.0,0.0);
         robot.claw1.setPosition(0.3);
         robot.claw2.setPosition(0.6);
 
@@ -109,8 +112,7 @@ public class Blue1Simple extends LinearOpMode {
                 robot.onmiDrive(-0.4,0.0,0.0);
             }
         }
-        while(runtime.seconds() < 17) {robot.jknock.setPosition(0.59);}
-        robot.navx_device.close();
+        while(runtime.seconds() < 17 && opModeIsActive()) {robot.jknock.setPosition(0.59);}
         while(opModeIsActive()) {
             idle();
         }

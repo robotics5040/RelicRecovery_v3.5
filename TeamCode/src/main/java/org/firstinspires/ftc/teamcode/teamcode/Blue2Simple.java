@@ -41,13 +41,16 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @Autonomous(name="Omnibot: Blue2Simple", group="Omnibot")
 //@Disabled
-public class Blue2Simple extends LinearOpMode {
+public class Blue2Simple extends AutoPull {
 
     HardwareOmniRobot robot   = new HardwareOmniRobot();
     ElapsedTime runtime = new ElapsedTime();
 
     @Override public void runOpMode() throws InterruptedException {
-        robot.init(hardwareMap);
+        robot.init(hardwareMap, false);
+
+        robot.grabber.setPower(0.75);
+        robot.grabber.setTargetPosition(1485);
 
         telemetry.addData("Status", "Ready to run");
         telemetry.update();
@@ -55,21 +58,21 @@ public class Blue2Simple extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
-        robot.JewelKnock("blue");
-        robot.DriveFor(0.3,0.0,0.0,0.0);
+        JewelKnock(robot,"blue");
+        DriveFor(robot,0.3,0.0,0.0,0.0);
         robot.wheelie.setPower(1.0);
-        robot.DriveFor(1.2,1.0,0.0,0.0);
+        DriveFor(robot,1.2,1.0,0.0,0.0);
         robot.wheelie.setPower(0.0);
-        robot.DriveFor(0.3,0.0,0.0,0.0);
+        DriveFor(robot,0.3,0.0,0.0,0.0);
 
-        robot.DriveFor(1.8,0.0,0.0,0.5);
+        DriveFor(robot,1.8,0.0,0.0,0.5);
 
         robot.grabber.setTargetPosition(0);
         robot.claw1.setPosition(0.3);
         robot.claw2.setPosition(0.6);
 
         boolean dis = false;
-        while(dis == false && runtime.seconds() < 26) {
+        while(dis == false && runtime.seconds() < 26 && opModeIsActive()) {
             double distanceBack = robot.ultra_back.getDistance(DistanceUnit.CM);
 
             telemetry.addData("Back", distanceBack);
@@ -86,7 +89,6 @@ public class Blue2Simple extends LinearOpMode {
                 robot.onmiDrive(0.0,0.4,0.0);
             }
         }
-        while(runtime.seconds() < 28) {robot.jknock.setPosition(0.59);}
-        robot.navx_device.close();
+        while(runtime.seconds() < 28 && opModeIsActive()) {robot.jknock.setPosition(0.59);}
     }
 }

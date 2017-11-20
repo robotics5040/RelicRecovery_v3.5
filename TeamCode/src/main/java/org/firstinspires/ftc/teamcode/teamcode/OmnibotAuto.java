@@ -50,14 +50,14 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Omnibot: Autotest", group="Omnibot")
+@Autonomous(name="Omnibot: OmnibotAuto", group="Omnibot")
 //@Disabled
-public class OmnibotAuto extends LinearOpMode {
+public class OmnibotAuto extends AutoPull {
 
     HardwareOmniRobot robot   = new HardwareOmniRobot();
 
     @Override public void runOpMode() {
-        robot.init(hardwareMap);
+        robot.init(hardwareMap, false);
 
         telemetry.addData("Status", "Ready to run");    //
         telemetry.update();
@@ -66,21 +66,20 @@ public class OmnibotAuto extends LinearOpMode {
 
         //Vuforia Stuff
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        int choosen = robot.Vuforia(cameraMonitorViewId, "red");
+        int choosen = Vuforia(cameraMonitorViewId, "red");
         telemetry.addData("VuMark", "%s visible", choosen);
         telemetry.update();
 
         robot.jknock.setPosition(0.45);
-        robot.DriveFor(2.0, 0.0, 0.0, 0.0);
+        DriveFor(robot,2.0, 0.0, 0.0, 0.0);
         robot.jkcolor.enableLed(true);
         telemetry.addData("Color Sensor", robot.jkcolor.blue());
         telemetry.update();
-        robot.JewelKnock("red");
-        robot.DriveFor(2.0, 0.0, 0.0, 0.0);
-        robot.DriveFor(1.2, 1.0, 0.0, 0.0);
-        robot.DriveFor(5.0, 0.0, 0.0, 0.0);
+        JewelKnock(robot,"red");
+        DriveFor(robot,2.0, 0.0, 0.0, 0.0);
+        DriveFor(robot,1.2, 1.0, 0.0, 0.0);
+        DriveFor(robot,5.0, 0.0, 0.0, 0.0);
         robot.grabber.setTargetPosition(0);
-        robot.DriveFor(1.0, 0.0, 0.0, 0.0);
-        robot.navx_device.close();
+        DriveFor(robot,1.0, 0.0, 0.0, 0.0);
     }
 }

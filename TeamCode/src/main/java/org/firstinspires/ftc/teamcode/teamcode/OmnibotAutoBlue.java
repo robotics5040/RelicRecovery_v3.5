@@ -56,14 +56,13 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @Autonomous(name="Omnibot: AutotestBlue", group="Omnibot")
 //@Disabled
-public class OmnibotAutoBlue extends LinearOpMode {
+public class OmnibotAutoBlue extends AutoPull {
 
     HardwareOmniRobot  robot   = new HardwareOmniRobot();
     ElapsedTime runtime = new ElapsedTime();
 
     @Override public void runOpMode() {
-        robot.init(hardwareMap);
-        robot.navx_device.zeroYaw();
+        robot.init(hardwareMap, false);
 
         telemetry.addData("Status", "Ready to run");
         telemetry.update();
@@ -72,14 +71,14 @@ public class OmnibotAutoBlue extends LinearOpMode {
 
         //Vuforia Stuff
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        int choosen = robot.Vuforia(cameraMonitorViewId, "blue");
+        int choosen = Vuforia(cameraMonitorViewId, "blue");
         telemetry.addData("VuMark", "%s visible", choosen);
         telemetry.update();
 
-        robot.JewelKnock("blue");
-        robot.DriveFor(0.3,0.0,0.0,0.0);
-        robot.DriveFor(1.2,1.0,0.0,0.0);
-        robot.DriveFor(1.0,0.0,0.0,0.0);
+        JewelKnock(robot,"blue");
+        DriveFor(robot,0.3,0.0,0.0,0.0);
+        DriveFor(robot,1.2,1.0,0.0,0.0);
+        DriveFor(robot,1.0,0.0,0.0,0.0);
 
         //setting distance to choosen column
         int target;
@@ -94,17 +93,6 @@ public class OmnibotAutoBlue extends LinearOpMode {
             target = 24;
         }
 
-        //turn 90
-        robot.NavXInit(90);
-        runtime.reset();
-        while(robot.navx_device.isMoving() == true && runtime.seconds() < 1.5) {
-            telemetry.addData("NavX moving1", robot.navx_device.isMoving());
-            telemetry.addData("NavX Updating1?", robot.yawPIDController.isNewUpdateAvailable(new navXPIDController.PIDResult()));
-            telemetry.addData("NavX Updating2?", robot.yawPIDController.isNewUpdateAvailable(robot.yawPIDResult));
-            telemetry.update();
-            robot.NavX(0.0,0.0);
-        }
-
         //move distance from column wall     19 with columns?
          boolean dis = false;
         while(dis == false) {
@@ -117,10 +105,8 @@ public class OmnibotAutoBlue extends LinearOpMode {
                 dis = true;
             }
             else if(distanceBack <= 17) {
-                robot.NavX(0.4,0.0);
             }
             else if(distanceBack >= 17) {
-                robot.NavX(-0.4,0.0);
             }
         }
 
@@ -132,25 +118,21 @@ public class OmnibotAutoBlue extends LinearOpMode {
             telemetry.update();
 
             if(distanceLeft==target) {
-                robot.NavX(0.0,0.0);
                 while(robot.dumper.getCurrentPosition() <= 175){robot.dumper.setTargetPosition(180);}
                 while(robot.dumper.getCurrentPosition() != 0){robot.dumper.setTargetPosition(0);}
                 inPlace = true;
             }
             else if(distanceLeft > target) {
-                robot.NavX(0.0, -0.5);
             }
             else if(distanceLeft < target && distanceLeft > target-2) {
-                robot.NavX(0.0, 0.5);
             }
             else {
-                robot.NavX(0.0, 1.0);
             }
         }
 
 
 
         robot.grabber.setTargetPosition(0);
-        robot.DriveFor(1.0,0.0,0.0,0.0);
+        DriveFor(robot,1.0,0.0,0.0,0.0);
     }
 }

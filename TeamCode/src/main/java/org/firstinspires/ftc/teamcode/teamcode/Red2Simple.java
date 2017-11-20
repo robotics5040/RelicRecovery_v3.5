@@ -41,13 +41,16 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @Autonomous(name="Omnibot: Red2Simple", group="Omnibot")
 //@Disabled
-public class Red2Simple extends LinearOpMode {
+public class Red2Simple extends AutoPull {
 
     HardwareOmniRobot  robot   = new HardwareOmniRobot();
     ElapsedTime runtime = new ElapsedTime();
 
     @Override public void runOpMode() {
-        robot.init(hardwareMap);
+        robot.init(hardwareMap, false);
+
+        robot.grabber.setPower(0.75);
+        robot.grabber.setTargetPosition(1485);
 
         telemetry.addData("Status", "Ready to run");
         telemetry.update();
@@ -55,13 +58,13 @@ public class Red2Simple extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
-        robot.JewelKnock("red");
-        robot.DriveFor(0.3,0.0,0.0,0.0);
+        JewelKnock(robot,"red");
+        DriveFor(robot,0.3,0.0,0.0,0.0);
         robot.wheelie.setPower(-1.0);
-        robot.DriveFor(1.1,-1.0,0.0,0.0);
+        DriveFor(robot,1.1,-1.0,0.0,0.0);
         robot.wheelie.setPower(0.0);
-        robot.DriveFor(0.3,0.0,0.0,0.0);
-        robot.DriveFor(1.8,0.0,0.0,0.5);
+        DriveFor(robot,0.3,0.0,0.0,0.0);
+        DriveFor(robot,1.8,0.0,0.0,0.5);
 
         robot.grabber.setTargetPosition(0);
         robot.claw1.setPosition(0.3);
@@ -69,7 +72,7 @@ public class Red2Simple extends LinearOpMode {
 
         //move into position from
         boolean dis = false;
-        while(dis == false && runtime.seconds() < 26) {
+        while(dis == false && runtime.seconds() < 26 && opModeIsActive()) {
             double distanceBack = robot.ultra_back.getDistance(DistanceUnit.CM);
 
             telemetry.addData("Back", distanceBack);
@@ -86,6 +89,5 @@ public class Red2Simple extends LinearOpMode {
                 robot.onmiDrive(0.0,0.4,0.0);
             }
         }
-        robot.navx_device.close();
     }
 }

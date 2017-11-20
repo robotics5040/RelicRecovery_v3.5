@@ -56,14 +56,12 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @Autonomous(name="Omnibot: Blue2Proto", group="Omnibot")
 //@Disabled
-public class Blue2Proto extends LinearOpMode {
+public class Blue2Proto extends AutoPull {
 
     HardwareOmniRobot  robot   = new HardwareOmniRobot();
     ElapsedTime runtime = new ElapsedTime();
 
     @Override public void runOpMode() {
-        robot.init(hardwareMap);
-        robot.navx_device.zeroYaw();
         //robot.yawPIDResult = new navXPIDController.PIDResult();
 
         telemetry.addData("Status", "Ready to run");
@@ -73,30 +71,16 @@ public class Blue2Proto extends LinearOpMode {
 
         //Vuforia Stuff
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        int choosen = robot.Vuforia(cameraMonitorViewId, "blue");
+        int choosen = Vuforia(cameraMonitorViewId, "blue");
         telemetry.addData("VuMark", "%s visible", choosen);
         telemetry.update();
 
-        robot.JewelKnock("blue");
-        robot.DriveFor(0.3,0.0,0.0,0.0);
+        JewelKnock(robot,"blue");
+        DriveFor(robot,0.3,0.0,0.0,0.0);
         robot.wheelie.setPower(1.0);
-        robot.DriveFor(1.2,1.0,0.0,0.0);
+        DriveFor(robot,1.2,1.0,0.0,0.0);
         robot.wheelie.setPower(0.0);
-        robot.DriveFor(0.3,0.0,0.0,0.0);
-
-
-
-        //turn 180
-        robot.NavXInit(180);
-        runtime.reset();
-
-        while(robot.navx_device.isMoving() == true && runtime.seconds() < 1.5) {
-            telemetry.addData("NavX moving1", robot.navx_device.isMoving());
-            telemetry.addData("NavX Updating1?", robot.yawPIDController.isNewUpdateAvailable(new navXPIDController.PIDResult()));
-            telemetry.addData("NavX Updating2?", robot.yawPIDController.isNewUpdateAvailable(robot.yawPIDResult));
-            telemetry.update();
-            robot.NavX(0.0,0.0);
-        }
+        DriveFor(robot,0.3,0.0,0.0,0.0);
 
         int target;
         switch(choosen) {
@@ -129,15 +113,13 @@ public class Blue2Proto extends LinearOpMode {
             telemetry.update();
 
             if(distanceRight >= target-1 && distanceRight <= target+1) {
-                robot.NavX(0.0,0.0);
+
                 inPlace = true;
                 dis = true;
             }
             else if(distanceRight < target-1) {
-                robot.NavX(0.0,0.4);
             }
             else {
-                robot.NavX(0.0,-0.4);
             }
         }
         if(inPlace == true) {
@@ -148,19 +130,15 @@ public class Blue2Proto extends LinearOpMode {
                 telemetry.update();
 
                 if(distanceBack >= 17-1 && distanceBack <= 17+1) {
-                    robot.NavX(0.0,0.0);
                     dis = true;
                 }
                 else if(distanceBack < 17-1) {
-                    robot.NavX(-0.4,0.0);
                 }
                 else {
-                    robot.NavX(0.4,0.0);
                 }
             }
             while(robot.dumper.getCurrentPosition() <= 480){robot.dumper.setTargetPosition(480);}
             while(robot.dumper.getCurrentPosition() != 0){robot.dumper.setTargetPosition(0);}
         }
-        robot.navx_device.close();
     }
 }

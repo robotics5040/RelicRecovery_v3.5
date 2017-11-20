@@ -32,13 +32,13 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package org.firstinspires.ftc.teamcode.teamcode;
 
-import com.kauailabs.navx.ftc.navXPIDController;
+import android.graphics.Color;
+
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 /**
  * This file provides basic Telop driving for a Pushbot robot.
@@ -57,12 +57,12 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @TeleOp(name="Pushbot: Omnibot Pushbot", group="Pushbot")
 //@Disabled
-public class OmniBot_Iterative extends OpMode {
+public class OmniBot_Iterative extends OpMode{
     private double position = 0.0;
-        public int  pressed = 0;
-        double wrist_num = 0;
-        boolean aPressed=false,bPressed=false,xPressed=false,yPressed=true,closed = true;
-        ElapsedTime runtime = new ElapsedTime();
+    public int  pressed = 0;
+    double wrist_num = 0;
+    boolean aPressed=false,bPressed=false,xPressed=false,yPressed=true,closed = true;
+    ElapsedTime runtime = new ElapsedTime();
     /* Declare OpMode members. */
     private HardwareOmniRobot robot; // use the class created to define a Pushbot's hardware
 
@@ -79,7 +79,9 @@ public class OmniBot_Iterative extends OpMode {
         /* Initialize the hardware variables.
          * The init() method of the hardware class does all the work here
          */
-        robot.init(hardwareMap);
+        robot.init(hardwareMap, false);
+        robot.grabber.setPower(0.75);
+        robot.grabber.setTargetPosition(-1485);
 
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Say", "Hello Driver");    //
@@ -97,8 +99,8 @@ public class OmniBot_Iterative extends OpMode {
      */
     @Override
     public void start() {
-        robot.navx_device.zeroYaw();
-        robot.NavXInit(0);
+        robot.grabber.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.grabber.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
     /*
@@ -106,7 +108,7 @@ public class OmniBot_Iterative extends OpMode {
      */
     @Override
     public void loop() {
-        double left_stick_x, left_stick_y,right_stick_x, right_stick_y, power, left_trigger, right_trigger,LX,RX,front=0,side=0;
+        double left_stick_x, left_stick_y,right_stick_x,right_stick_y,power, left_trigger, right_trigger,LX,RX,rotate=0,front=0,side=0;
         boolean NavXTemp, b_button1,a_button1,y_button1,x_button1,left_bumper, right_bumper, a_button, b_button, x_button, y_button,dup,ddown,dleft,dright,left_bump1,right_bump1, d_up1,d_down1,d_left1,d_right1,stick_press, stick_press1;
 
 
@@ -114,6 +116,7 @@ public class OmniBot_Iterative extends OpMode {
         left_stick_x = gamepad1.left_stick_x;
         left_stick_y = gamepad1.left_stick_y;
         right_stick_x = gamepad1.right_stick_x;
+        right_stick_y = gamepad1.right_stick_y;
 
         NavXTemp = gamepad1.left_stick_button;
         left_bumper = gamepad2.left_bumper;
@@ -146,6 +149,12 @@ public class OmniBot_Iterative extends OpMode {
         robot.grabber.setPower(1);
         robot.dumper.setPower(0.4);
 
+        if(ddown == true){
+            robot.jknock.setPosition(0.0);
+        }
+        else if(dup == true){
+            robot.jknock.setPosition(0.7);
+        }
 
         //slight adjustments for driver
         if(d_down1 == true) {
@@ -165,6 +174,7 @@ public class OmniBot_Iterative extends OpMode {
         if(a_button1 == true || aPressed == true) {
             front = left_stick_y * -1;
             side = left_stick_x * -1;
+            rotate = right_stick_x*-1;
 
             aPressed = true;
             bPressed = false;
@@ -174,6 +184,7 @@ public class OmniBot_Iterative extends OpMode {
         if(b_button1 == true || bPressed == true) {
             front = left_stick_x;
             side = left_stick_y*-1;
+            rotate = right_stick_y*-1;
 
             aPressed = false;
             bPressed = true;
@@ -183,6 +194,7 @@ public class OmniBot_Iterative extends OpMode {
         if(x_button1 == true || xPressed == true) {
             front = left_stick_x*-1;
             side = left_stick_y;
+            rotate = right_stick_y;
 
             aPressed = false;
             bPressed = false;
@@ -192,6 +204,7 @@ public class OmniBot_Iterative extends OpMode {
         if(y_button1 == true || yPressed == true) {
             front = left_stick_y;
             side = left_stick_x;
+            rotate = right_stick_x;
 
             aPressed = false;
             bPressed = false;
@@ -199,15 +212,15 @@ public class OmniBot_Iterative extends OpMode {
             yPressed = true;
         }
 
-        robot.onmiDrive(side, front, right_stick_x);
+        robot.onmiDrive(side, front, rotate);
 
         //grabber position
         if (left_bumper == true) {
-            robot.grabber.setTargetPosition(1500);
+            robot.grabber.setTargetPosition(1600);
 
         }
         else if(left_trigger > 0.2) {
-            robot.grabber.setTargetPosition(1000);
+            robot.grabber.setTargetPosition(1200);
         }
         else {
             robot.grabber.setTargetPosition(0);
@@ -234,8 +247,8 @@ public class OmniBot_Iterative extends OpMode {
         //claw controlls
         //closes claws
         if (x_button == true) {
-            robot.claw1.setPosition(0.7);
-            robot.claw2.setPosition(0.3);
+            robot.claw1.setPosition(0.76);
+            robot.claw2.setPosition(0.24);
         }
         //all the way open
         else if(y_button == true) {
@@ -244,82 +257,11 @@ public class OmniBot_Iterative extends OpMode {
         }
         //part way open when not pressing a button
         else {
-            robot.claw1.setPosition(0.55);
+            robot.claw1.setPosition(0.6);
             robot.claw2.setPosition(0.4);
         }
 
-        if(b_button == true) {
-            int pos = robot.grabber.getCurrentPosition();
-            robot.grabber.setTargetPosition(pos-5);
-            robot.grabber.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            robot.grabber.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        }
-
-        //reel controlls
-        /*oif (dup == true) {
-            robot.reel.setPower(.75);
-        }
-        else if (ddown == true) {
-            robot.reel.setPower(-.2);
-        }
-        else {
-            robot.reel.setPower(0);
-        }
-        //slide controlls
-        if(dleft == true) {
-            robot.slide.setPower(.5);
-        }
-        else  if (dright == true) {
-            robot.slide.setPower(-.5);
-        }
-        else {
-            robot.slide.setPower(-.02);
-
-        }
-
-
-        if((stick_press==true || stick_press1 == true) && closed == false && (runtime.seconds() > .5)){
-            robot.clamp.setPosition(0.55);
-            closed = true;
-            runtime.reset();
-        }
-        else if((stick_press==true || stick_press1==true)&& closed==true && (runtime.seconds() > 0.5)){
-            robot.clamp.setPosition(0.1);
-            closed = false;
-            runtime.reset();
-        }
-        //if (a_button == true) {
-            //robot.wrist.setPosition((robot.wrist.getPosition()-0.1));
-        //}
-        if(a_button==true && wrist_num >= 0 ) {
-            wrist_num = wrist_num -  0.01;
-            robot.wrist.setPosition(wrist_num);
-        }
-        else    if (b_button==true && wrist_num <=2) {
-            wrist_num = wrist_num+0.01;
-            robot.wrist.setPosition(wrist_num);
-        }
-        else {
-            robot.wrist.setPosition(wrist_num);
-        }*/
-
-        /*if (b_button2 == true) {
-            robot.grabber.setPower(-0.1);
-
-        }
-        else {
-            robot.grabber.setPower(0);
-        }*/
-
-
-        //change
-        //robot.JKnock.setPosition(0.9);
-
-        //robot.relicLifter(dup,ddown,dleft,dright);
-
-        //robot.grabber.setPosition(0.0);
         // Send telemetry message to signify robot running;
-
         telemetry.addLine("Controller Telemetry:");
         telemetry.addData("Left Bumper: ", left_bumper);
         telemetry.addData("Right Bumper: ", right_bumper );
@@ -337,15 +279,7 @@ public class OmniBot_Iterative extends OpMode {
         telemetry.addData("Ultra left", robot.ultra_left.getDistance(DistanceUnit.CM));
         telemetry.addData("Ultra right", robot.ultra_right.getDistance(DistanceUnit.CM));
         telemetry.addLine("What is my name?: Spitz");
-
-        if(NavXTemp == true)
-            robot.navx_device.zeroYaw();
-
-        telemetry.addData("NavX compassHeading", robot.navx_device.getCompassHeading());
-        telemetry.addData("NavX z", robot.navx_device.getRawGyroZ());
-        telemetry.addData("NavX y", robot.navx_device.getRawGyroY());
-        telemetry.addData("NavX updating?",robot.yawPIDController.isNewUpdateAvailable(new navXPIDController.PIDResult()));
-        telemetry.addData("NavX updating?2",robot.yawPIDController.isNewUpdateAvailable(robot.yawPIDResult));
+        telemetry.addData("rotate",rotate);
 
     }
 
@@ -355,7 +289,7 @@ public class OmniBot_Iterative extends OpMode {
      */
     @Override
     public void stop() {
-        robot.navx_device.close();
+
     }
 
 }

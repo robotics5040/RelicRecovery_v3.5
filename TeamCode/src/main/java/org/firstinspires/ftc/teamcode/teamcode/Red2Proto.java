@@ -55,14 +55,13 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @Autonomous(name="Omnibot: Red2Proto", group="Omnibot")
 //@Disabled
-public class Red2Proto extends LinearOpMode {
+public class Red2Proto extends AutoPull {
 
     HardwareOmniRobot robot   = new HardwareOmniRobot();
     ElapsedTime runtime = new ElapsedTime();
 
     @Override public void runOpMode() {
-        robot.init(hardwareMap);
-        robot.navx_device.zeroYaw();
+        robot.init(hardwareMap, false);
         //robot.yawPIDResult = new navXPIDController.PIDResult();
 
         telemetry.addData("Status", "Ready to run");
@@ -73,7 +72,7 @@ public class Red2Proto extends LinearOpMode {
 
         //Vuforia Stuff
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        int choosen = robot.Vuforia(cameraMonitorViewId, "red");
+        int choosen = Vuforia(cameraMonitorViewId, "red");
         int target = 0;
 
         switch(choosen) {
@@ -93,13 +92,12 @@ public class Red2Proto extends LinearOpMode {
         telemetry.addData("VuMark", "%s visible", choosen);
         telemetry.update();
 
-        robot.JewelKnock("red");
-        robot.DriveFor(0.3,0.0,0.0,0.0);
-        robot.DriveFor(1.1,-1.0,0.0,0.0);
-        robot.DriveFor(0.3,0.0,0.0,0.0);
+        JewelKnock(robot,"red");
+        DriveFor(robot,0.3,0.0,0.0,0.0);
+        DriveFor(robot,1.1,-1.0,0.0,0.0);
+        DriveFor(robot,0.3,0.0,0.0,0.0);
 
-        robot.NavXInit(-90);
-        robot.DriveFor(1.8,0.0,0.0,0.5);
+        DriveFor(robot,1.8,0.0,0.0,0.5);
 
         robot.grabber.setTargetPosition(0);
         robot.claw1.setPosition(0.3);
@@ -124,6 +122,5 @@ public class Red2Proto extends LinearOpMode {
             }
         }
         //while(runtime.seconds() < 28) {robot.jknock.setPosition(0.59);}
-        robot.navx_device.close();
     }
 }

@@ -33,7 +33,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package org.firstinspires.ftc.teamcode.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.RobotLog;
 
 /**
  * This file provides basic Telop driving for a Pushbot robot.
@@ -50,31 +51,53 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Omnibot: AutotestRed", group="Omnibot")
+@Autonomous(name="Omnibot: AutoTest", group="Omnibot")
 //@Disabled
-public class OmnibotAutoRed extends AutoPull {
+public class AutoTest extends AutoPull {
 
     HardwareOmniRobot robot   = new HardwareOmniRobot();
+    ElapsedTime runtime = new ElapsedTime();
 
     @Override public void runOpMode() {
-        robot.init(hardwareMap, false);
-
-        telemetry.addData("Status", "Ready to run");    //
+        robot.init(hardwareMap, true);
+        telemetry.addData("Running autoTest","now");
+        telemetry.update();
+        while (robot.gyro.isCalibrating()){
+            telemetry.addLine("Calibrating gyro");
+            telemetry.update();
+        }
+        telemetry.addData("Waiting to start","now");
         telemetry.update();
 
         waitForStart();
-
-        //Vuforia Stuff
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        int choosen = Vuforia(cameraMonitorViewId, "red");
-        telemetry.addData("VuMark", "%s visible", choosen);
+        int heading = robot.gyro.getHeading();
+        telemetry.addData("heading",heading);
         telemetry.update();
-
-        JewelKnock(robot,"red");
-        DriveFor(robot,2.0, 0.0, 0.0, 0.0);
-        DriveFor(robot,1.2, -1.0, 0.0, 0.0);
-        DriveFor(robot,5.0, 0.0, 0.0, 0.0);
-        robot.grabber.setTargetPosition(0);
-        DriveFor(robot,1.0, 0.0, 0.0, 0.0);
+        RotateTo(robot,90);
+    }
+    public void RotateTo(int degrees) {
+        int heading = robot.gyro.getHeading();
+        while (heading != degrees && opModeIsActive()) {
+            telemetry.addData("heading", heading);
+            telemetry.update();
+            heading = robot.gyro.getHeading();
+            if (degrees < heading) {
+                onmiDrive(0.0, 0.0, -0.7);
+            } else {
+                telemetry.addLine("Moving?");
+                onmiDrive(0.0, 0.0, 0.7);
+            }
+        }
+    }
+    public void onmiDrive (double sideways, double forward, double rotation)
+    {
+        try {
+            robot.leftMotor1.setPower(limit(((forward - sideways)/2) * 1 + (-.25 * rotation)));
+            robot.leftMotor2.setPower(limit(((forward + sideways)/2) * 1 + (-.25 * rotation)));
+            robot.rightMotor1.setPower(limit(((-forward - sideways)/2) * 1 + (-.25 * rotation)));
+            robot.rightMotor2.setPower(limit(((-forward + sideways)/2) * 1 + (-.25 * rotation)));
+        } catch (Exception e) {
+            RobotLog.ee(robot.MESSAGETAG, e.getStackTrace().toString());
+        }
     }
 }
