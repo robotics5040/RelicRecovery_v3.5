@@ -50,8 +50,6 @@ public class AutoPull extends LinearOpMode {
         runtime.reset(); //resets time
 
         while (opModeIsActive() && runtime.seconds() < time) {    //runs for amount of time wanted
-            telemetry.addData("running",opModeIsActive());
-            telemetry.update();
         }
         onmiDrive(robot,0.0, 0.0, 0.0); //stops  moving after
     }
@@ -78,7 +76,7 @@ public class AutoPull extends LinearOpMode {
         robot.jknock.setPosition(0.0);
         robot.jkcolor.enableLed(true);
         robot.jkcolor2.enableLed(true);
-        DriveFor(robot,1.0,0.0,0.0,0.0);
+        DriveFor(robot,1.5,0.0,0.0,0.0);
         //while(jknock.getPosition() != 0.45){jknock.setPosition(0.0);}
         boolean decided = false;
         runtime.reset();
@@ -86,12 +84,6 @@ public class AutoPull extends LinearOpMode {
         int color1r = robot.jkcolor.red();
         int color2b = robot.jkcolor2.blue();
         int color2r = robot.jkcolor2.red();
-        telemetry.addData("c1b", color1b);
-        telemetry.addData("c1r", color1r);
-        telemetry.addData("c2b", color2b);
-        telemetry.addData("c2r", color2r);
-        telemetry.update();
-        DriveFor(robot,1.0,0.0,0.0,0.0);
 
         while (opModeIsActive() && decided == false && runtime.seconds() < 2) {
             if (color1r < 2 && color1b< 2 && color2r < 2 && color2b < 2) {
@@ -128,15 +120,11 @@ public class AutoPull extends LinearOpMode {
         float heading = robot.gyro.getHeading();
         while(heading != degrees && opModeIsActive()) {
             heading = robot.gyro.getHeading();
-            telemetry.addData("heading", heading);
             if (degrees < heading) {
-                telemetry.addLine("1");
-                onmiDrive(robot, 0.0, 0.0, -0.4);
-            } else {
-                telemetry.addLine("2");
                 onmiDrive(robot, 0.0, 0.0, 0.4);
+            } else {
+                onmiDrive(robot, 0.0, 0.0, -0.4);
             }
-            telemetry.update();
         }
     }
 

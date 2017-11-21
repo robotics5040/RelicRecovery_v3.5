@@ -32,13 +32,12 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package org.firstinspires.ftc.teamcode.teamcode;
 
-import android.graphics.Color;
-
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.util.ElapsedTime;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 /**
  * This file provides basic Telop driving for a Pushbot robot.
@@ -55,18 +54,18 @@ import com.qualcomm.robotcore.hardware.DcMotor;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Pushbot: Omnibot Pushbot", group="Pushbot")
+@TeleOp(name="Pushbot: Omnibot Pushbot Grabber up", group="Pushbot")
 //@Disabled
-public class OmniBot_Iterative extends OpMode{
+public class OmniBot_Iterative2 extends OpMode{
     private double position = 0.0;
     public int  pressed = 0;
     double wrist_num = 0;
-    boolean aPressed=false,bPressed=false,xPressed=false,yPressed=true,closed = true;
+    boolean run = false,aPressed=false,bPressed=false,xPressed=false,yPressed=true,closed = true;
     ElapsedTime runtime = new ElapsedTime();
     /* Declare OpMode members. */
     private HardwareOmniRobot robot; // use the class created to define a Pushbot's hardware
 
-    public OmniBot_Iterative() {
+    public OmniBot_Iterative2() {
         robot = new HardwareOmniRobot();
     }
 
@@ -80,8 +79,6 @@ public class OmniBot_Iterative extends OpMode{
          * The init() method of the hardware class does all the work here
          */
         robot.init(hardwareMap, false);
-        robot.grabber.setPower(0.75);
-        robot.grabber.setTargetPosition(-1*robot.GRABBER_AUTOPOS);
 
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Say", "Hello Driver");    //
@@ -99,8 +96,6 @@ public class OmniBot_Iterative extends OpMode{
      */
     @Override
     public void start() {
-        robot.grabber.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.grabber.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
     /*
@@ -109,7 +104,7 @@ public class OmniBot_Iterative extends OpMode{
     @Override
     public void loop() {
         double left_stick_x, left_stick_y,right_stick_x,right_stick_y,power, left_trigger, right_trigger,LX,RX,rotate=0,front=0,side=0;
-        boolean NavXTemp, b_button1,a_button1,y_button1,x_button1,left_bumper, right_bumper, a_button, b_button, x_button, y_button,dup,ddown,dleft,dright,left_bump1,right_bump1, d_up1,d_down1,d_left1,d_right1,stick_press, stick_press1;
+        boolean start,NavXTemp, b_button1,a_button1,y_button1,x_button1,left_bumper, right_bumper, a_button, b_button, x_button, y_button,dup,ddown,dleft,dright,left_bump1,right_bump1, d_up1,d_down1,d_left1,d_right1,stick_press, stick_press1;
 
 
         //note: The joystick goes negative when pushed forwards, so negate it)
@@ -145,6 +140,7 @@ public class OmniBot_Iterative extends OpMode{
         d_right1 = gamepad1.dpad_right;
         stick_press = gamepad2.right_stick_button;
         stick_press1 = gamepad2.left_stick_button;
+        start = gamepad2.start;
 
         robot.grabber.setPower(1);
         robot.dumper.setPower(0.4);
@@ -259,6 +255,17 @@ public class OmniBot_Iterative extends OpMode{
         else {
             robot.claw1.setPosition(0.6);
             robot.claw2.setPosition(0.4);
+        }
+
+        if(start == true && run == false) {
+            robot.grabber.setPower(0.75);
+            while(robot.grabber.getCurrentPosition() != -1*robot.GRABBER_AUTOPOS) {
+                robot.grabber.setTargetPosition(-1*robot.GRABBER_AUTOPOS);
+                telemetry.addData("grabber",robot.grabber.getCurrentPosition());
+            }
+            robot.grabber.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            robot.grabber.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            run = true;
         }
 
         // Send telemetry message to signify robot running;

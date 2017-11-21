@@ -50,13 +50,15 @@ public class Red2Simple extends AutoPull {
         robot.init(hardwareMap, false);
 
         robot.grabber.setPower(0.75);
-        robot.grabber.setTargetPosition(1485);
+        robot.grabber.setTargetPosition(robot.GRABBER_AUTOPOS);
 
         telemetry.addData("Status", "Ready to run");
         telemetry.update();
 
         waitForStart();
         runtime.reset();
+        robot.claw1.setPosition(0.7);
+        robot.claw2.setPosition(0.3);
 
         JewelKnock(robot,"red");
         DriveFor(robot,0.3,0.0,0.0,0.0);
