@@ -149,13 +149,6 @@ public class OmniBot_Iterative extends OpMode{
         robot.grabber.setPower(1);
         robot.dumper.setPower(0.4);
 
-        if(ddown == true){
-            robot.jknock.setPosition(0.0);
-        }
-        else if(dup == true){
-            robot.jknock.setPosition(0.7);
-        }
-
         //slight adjustments for driver
         if(d_down1 == true) {
             left_stick_y = 0.4;

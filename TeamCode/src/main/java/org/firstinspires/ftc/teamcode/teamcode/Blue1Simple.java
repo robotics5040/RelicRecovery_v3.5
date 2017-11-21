@@ -33,7 +33,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package org.firstinspires.ftc.teamcode.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.RobotLog;
 
@@ -59,12 +58,12 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 public class Blue1Simple extends AutoPull {
 
     HardwareOmniRobot robot   = new HardwareOmniRobot();
-    AutoPull robotauto = new AutoPull();
     ElapsedTime runtime = new ElapsedTime();
 
     @Override public void runOpMode() throws InterruptedException {
         robot.init(hardwareMap, false);
 
+        //sets position of the grabber for auto - stays up
         robot.grabber.setPower(0.75);
         robot.grabber.setTargetPosition(robot.GRABBER_AUTOPOS);
 
@@ -74,19 +73,21 @@ public class Blue1Simple extends AutoPull {
 
         waitForStart();
         runtime.reset();
+        //sets claws in so they do not break when turning
         robot.claw1.setPosition(0.7);
         robot.claw2.setPosition(0.3);
 
+        //runs from knocking off jewel to driving off platform.
         JewelKnock(robot,"blue");
         DriveFor(robot,0.3,0.0,0.0,0.0);
-        if(robot.jknock.getPosition() != 0.7) {robot.jknock.setPosition(0.7);}
+        //if(robot.jknock.getPosition() != 0.7) {robot.jknock.setPosition(0.7);}
         robot.wheelie.setPower(1);
         DriveFor(robot,1.4,1.0,0.0,0.0);
         robot.wheelie.setPower(0);
         DriveFor(robot,0.3,0.0,0.0,0.0);
 
+        //goes distance from wall to be in park zone
         boolean dis = false;
-        //robot.NavXInit(0);
         while(opModeIsActive() && dis == false && runtime.seconds() < 26) {
             double distanceLeft = robot.ultra_left.getDistance(DistanceUnit.CM);
 

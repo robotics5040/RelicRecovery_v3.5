@@ -21,18 +21,18 @@ import java.text.DecimalFormat;
  */
 @Disabled
 public class AutoPull extends LinearOpMode {
-    //HardwareOmniRobot robot = new HardwareOmniRobot();
     ElapsedTime runtime = new ElapsedTime();
     private final double MIN_MOTOR_OUTPUT_VALUE = -1.0;
     private final double MAX_MOTOR_OUTPUT_VALUE = 1.0;
 
     @Override public void runOpMode() throws InterruptedException {}
 
-
+    //needed for driving
     public double limit(double a) {
         return Math.min(Math.max(a, MIN_MOTOR_OUTPUT_VALUE), MAX_MOTOR_OUTPUT_VALUE);
     }
 
+    //normal drive for robot
     public void onmiDrive (HardwareOmniRobot robot,double sideways, double forward, double rotation)
     {
         try {
@@ -45,6 +45,7 @@ public class AutoPull extends LinearOpMode {
         }
     }
 
+    //drives robot for certain time amount. Can also be used for waiting time
     public void DriveFor(HardwareOmniRobot robot, double time, double forward, double side, double rotate) {
         onmiDrive(robot,side, -forward, rotate); //starts moving in wanted direction
         runtime.reset(); //resets time
@@ -54,7 +55,7 @@ public class AutoPull extends LinearOpMode {
         onmiDrive(robot,0.0, 0.0, 0.0); //stops  moving after
     }
 
-    //Jewel knocking off code
+    //Jewel knocking off code - gets called from the jewel code
     public void TurnLeft(HardwareOmniRobot robot){
         telemetry.addLine("Left");
         telemetry.update();
@@ -62,7 +63,6 @@ public class AutoPull extends LinearOpMode {
         robot.jknock.setPosition(0.7);
         DriveFor(robot,0.3, 0.0, 0.0, 0.5);
     }
-
     public void TurnRight(HardwareOmniRobot robot){
         telemetry.addLine("Right");
         telemetry.update();
@@ -71,13 +71,13 @@ public class AutoPull extends LinearOpMode {
         DriveFor(robot,0.3, 0.0, 0.0, -0.5);
     }
 
+    //jewel code
     public void JewelKnock(HardwareOmniRobot robot,String side){
 
         robot.jknock.setPosition(0.0);
         robot.jkcolor.enableLed(true);
         robot.jkcolor2.enableLed(true);
         DriveFor(robot,1.5,0.0,0.0,0.0);
-        //while(jknock.getPosition() != 0.45){jknock.setPosition(0.0);}
         boolean decided = false;
         runtime.reset();
         int color1b = robot.jkcolor.blue();
@@ -113,9 +113,10 @@ public class AutoPull extends LinearOpMode {
         }
         robot.jkcolor.enableLed(false);
         robot.jkcolor2.enableLed(false);
+        if(robot.jknock.getPosition() != 0.7) {robot.jknock.setPosition(0.7);}
     }
 
-    //
+    //rotates to degree. goes from 0 to 259 so no negative inputs
     public void RotateTo(HardwareOmniRobot robot,int degrees) {
         float heading = robot.gyro.getHeading();
         while(heading != degrees && opModeIsActive()) {
@@ -128,6 +129,7 @@ public class AutoPull extends LinearOpMode {
         }
     }
 
+    //vuforia
     public int Vuforia(int cameraMonitorViewId, String side) {
 
         int choosen = 0;
