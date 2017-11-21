@@ -61,12 +61,9 @@ public class Red1Simple extends AutoPull {
         JewelKnock(robot,"red");
         DriveFor(robot,0.3,0.0,0.0,0.0);
         robot.wheelie.setPower(-1.0);
-        DriveFor(robot,1.2,-1.0,0.0,0.0);
+        DriveFor(robot,1.4,-1.0,0.0,0.0);
         robot.wheelie.setPower(0.0);
         DriveFor(robot,0.3,0.0,0.0,0.0);
-        robot.grabber.setTargetPosition(0);
-        robot.claw1.setPosition(0.3);
-        robot.claw2.setPosition(0.6);
 
         boolean dis = false;
         while(dis == false && runtime.seconds() < 26 && opModeIsActive()) {
@@ -86,6 +83,5 @@ public class Red1Simple extends AutoPull {
                 robot.onmiDrive(-0.4,0.0,0.0);
             }
         }
-        while(runtime.seconds() < 28 && opModeIsActive()) {robot.jknock.setPosition(0.59);}
     }
 }

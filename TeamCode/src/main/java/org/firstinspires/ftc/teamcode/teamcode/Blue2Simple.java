@@ -67,10 +67,6 @@ public class Blue2Simple extends AutoPull {
 
         DriveFor(robot,1.8,0.0,0.0,0.5);
 
-        robot.grabber.setTargetPosition(0);
-        robot.claw1.setPosition(0.3);
-        robot.claw2.setPosition(0.6);
-
         boolean dis = false;
         while(dis == false && runtime.seconds() < 26 && opModeIsActive()) {
             double distanceBack = robot.ultra_back.getDistance(DistanceUnit.CM);
@@ -89,6 +85,5 @@ public class Blue2Simple extends AutoPull {
                 robot.onmiDrive(0.0,0.4,0.0);
             }
         }
-        while(runtime.seconds() < 28 && opModeIsActive()) {robot.jknock.setPosition(0.59);}
     }
 }

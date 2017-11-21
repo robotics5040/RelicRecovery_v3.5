@@ -61,14 +61,10 @@ public class Red2Simple extends AutoPull {
         JewelKnock(robot,"red");
         DriveFor(robot,0.3,0.0,0.0,0.0);
         robot.wheelie.setPower(-1.0);
-        DriveFor(robot,1.1,-1.0,0.0,0.0);
+        DriveFor(robot,1.2,-1.0,0.0,0.0);
         robot.wheelie.setPower(0.0);
         DriveFor(robot,0.3,0.0,0.0,0.0);
         DriveFor(robot,1.8,0.0,0.0,0.5);
-
-        robot.grabber.setTargetPosition(0);
-        robot.claw1.setPosition(0.3);
-        robot.claw2.setPosition(0.6);
 
         //move into position from
         boolean dis = false;

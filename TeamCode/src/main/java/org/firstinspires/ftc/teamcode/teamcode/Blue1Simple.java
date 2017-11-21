@@ -79,21 +79,19 @@ public class Blue1Simple extends AutoPull {
         DriveFor(robot,0.3,0.0,0.0,0.0);
         if(robot.jknock.getPosition() != 0.7) {robot.jknock.setPosition(0.7);}
         robot.wheelie.setPower(1);
-        DriveFor(robot,1.2,1.0,0.0,0.0);
+        DriveFor(robot,1.4,1.0,0.0,0.0);
         robot.wheelie.setPower(0);
         DriveFor(robot,0.3,0.0,0.0,0.0);
-        robot.claw1.setPosition(0.3);
-        robot.claw2.setPosition(0.6);
 
         boolean dis = false;
         //robot.NavXInit(0);
-        while(opModeIsActive() && dis == false && runtime.seconds() < 15) {
+        while(opModeIsActive() && dis == false && runtime.seconds() < 26) {
             double distanceLeft = robot.ultra_left.getDistance(DistanceUnit.CM);
 
             telemetry.addData("Left", distanceLeft);
             telemetry.update();
 
-            if(distanceLeft >= 14 && distanceLeft <= 16) {
+            if(distanceLeft >= 16 && distanceLeft <= 18) {
                 telemetry.addData("Done", distanceLeft);
                 telemetry.update();
                 RobotLog.ii("5040MSG","Done",distanceLeft);
@@ -101,7 +99,7 @@ public class Blue1Simple extends AutoPull {
                 robot.onmiDrive(0.0,0.0,0.0);
                 dis = true;
             }
-            else if(distanceLeft < 14) {
+            else if(distanceLeft < 16) {
                 telemetry.addData("Towards", distanceLeft);
                 telemetry.update();
                 robot.onmiDrive(0.4,0.0,0.0);
@@ -112,10 +110,5 @@ public class Blue1Simple extends AutoPull {
                 robot.onmiDrive(-0.4,0.0,0.0);
             }
         }
-        while(runtime.seconds() < 17 && opModeIsActive()) {robot.jknock.setPosition(0.59);}
-        while(opModeIsActive()) {
-            idle();
-        }
-
     }
 }
