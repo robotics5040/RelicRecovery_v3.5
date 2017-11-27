@@ -70,25 +70,16 @@ public class AutoTest extends AutoPull {
         telemetry.update();
 
         waitForStart();
-        int heading = robot.gyro.getHeading();
+        float heading = robot.gyro.getHeading();
         telemetry.addData("heading",heading);
         telemetry.update();
-        RotateTo(robot,90);
+        //int target = 90;
+
+
+
+        RotateTo(robot, 90);
     }
-    public void RotateTo(int degrees) {
-        int heading = robot.gyro.getHeading();
-        while (heading != degrees && opModeIsActive()) {
-            telemetry.addData("heading", heading);
-            telemetry.update();
-            heading = robot.gyro.getHeading();
-            if (degrees < heading) {
-                onmiDrive(0.0, 0.0, -0.7);
-            } else {
-                telemetry.addLine("Moving?");
-                onmiDrive(0.0, 0.0, 0.7);
-            }
-        }
-    }
+
     public void onmiDrive (double sideways, double forward, double rotation)
     {
         try {

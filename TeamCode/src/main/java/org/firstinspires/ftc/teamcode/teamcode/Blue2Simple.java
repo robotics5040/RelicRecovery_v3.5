@@ -59,7 +59,8 @@ public class Blue2Simple extends AutoPull {
         runtime.reset();
         robot.claw1.setPosition(0.7);
         robot.claw2.setPosition(0.3);
-
+        telemetry.addLine("Pre JKnocks");
+        telemetry.update();
         JewelKnock(robot,"blue");
         DriveFor(robot,0.3,0.0,0.0,0.0);
         robot.wheelie.setPower(1.0);
@@ -88,4 +89,6 @@ public class Blue2Simple extends AutoPull {
             }
         }
     }
+
+
 }

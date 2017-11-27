@@ -120,11 +120,16 @@ public class AutoPull extends LinearOpMode {
     public void RotateTo(HardwareOmniRobot robot,int degrees) {
         float heading = robot.gyro.getHeading();
         while(heading != degrees && opModeIsActive()) {
+            telemetry.addData("HEADING",heading);
+            telemetry.update();
             heading = robot.gyro.getHeading();
             if (degrees < heading) {
-                onmiDrive(robot, 0.0, 0.0, 0.4);
-            } else {
-                onmiDrive(robot, 0.0, 0.0, -0.4);
+                onmiDrive(robot, 0.0, 0.0, 0.38);
+            } else if (degrees > heading) {
+                onmiDrive(robot, 0.0, 0.0, -0.38);
+            }
+            else {
+                onmiDrive(robot,0.0,0.0,0.0);
             }
         }
     }
@@ -186,5 +191,4 @@ public class AutoPull extends LinearOpMode {
         return choosen;
     }
 }
-
 
