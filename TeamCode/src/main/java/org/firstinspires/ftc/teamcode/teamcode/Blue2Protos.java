@@ -175,7 +175,7 @@ public class Blue2Protos extends AutoPull {
         telemetry.update();
 
         robot.dumper.setPower(0.4);
-        while (robot.dumper.getCurrentPosition() <= 475 && opModeIsActive()) {
+        while (robot.dumper.getCurrentPosition() <= 475 && opModeIsActive() && runtime.seconds() < 28) {
             robot.dumper.setTargetPosition(480);
         }
         while (robot.dumper.getCurrentPosition() >= 5 && opModeIsActive()) {

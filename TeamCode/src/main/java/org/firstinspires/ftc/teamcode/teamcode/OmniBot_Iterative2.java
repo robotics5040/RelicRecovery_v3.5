@@ -259,11 +259,12 @@ public class OmniBot_Iterative2 extends OpMode{
             robot.dumper.setTargetPosition(0);
         }
 
-        //claw controlls
+        //claw controls
+        // OLD NUMBERS -- closed - .76,.24 -- partway - .6,.4
         //closes claws
         if (x_button == true) {
-            robot.claw1.setPosition(0.76);
-            robot.claw2.setPosition(0.24);
+            robot.claw1.setPosition(0.7);
+            robot.claw2.setPosition(0.3);
         }
         //all the way open
         else if(y_button == true) {
@@ -272,8 +273,8 @@ public class OmniBot_Iterative2 extends OpMode{
         }
         //part way open when not pressing a button
         else {
-            robot.claw1.setPosition(0.6);
-            robot.claw2.setPosition(0.4);
+            robot.claw1.setPosition(0.55);
+            robot.claw2.setPosition(0.45);
         }
 
         // Send telemetry message to signify robot running;

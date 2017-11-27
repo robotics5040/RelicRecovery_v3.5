@@ -38,7 +38,7 @@ public class HardwareOmniRobot
 
     ModernRoboticsI2cRangeSensor ultra_right, ultra_left, ultra_back;
 
-    public final int GRABBER_AUTOPOS = 1300;
+    public final int GRABBER_AUTOPOS = 1400;
 
     /* Public OpMode members. */
     public AnalogInput flex = null;
