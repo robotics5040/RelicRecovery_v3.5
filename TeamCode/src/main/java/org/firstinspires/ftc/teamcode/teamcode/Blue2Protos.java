@@ -64,7 +64,7 @@ public class Blue2Protos extends AutoPull {
         robot.init(hardwareMap, true);
 
         robot.grabber.setPower(0.75);
-        robot.grabber.setTargetPosition(1200);
+        robot.grabber.setTargetPosition(robot.GRABBER_AUTOPOS);
 
         while (robot.gyro.isCalibrating()){
             telemetry.addLine("Calibrating gyro");
@@ -189,7 +189,6 @@ public class Blue2Protos extends AutoPull {
         DriveFor(robot,0.5, 0.4, 0.0, 0.0);
         robot.claw1.setPosition(0.3);
         robot.claw2.setPosition(0.7);
-        robot.grabber.setTargetPosition(0);
         DriveFor(robot,1.0, 0.0, 0.0, 0.0);
 
         }

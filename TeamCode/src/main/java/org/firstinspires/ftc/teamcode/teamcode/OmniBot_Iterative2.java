@@ -205,7 +205,7 @@ public class OmniBot_Iterative2 extends OpMode{
         //grabber position
         if(home == true && run == false) {
             robot.grabber.setPower(0.75);
-            while(robot.grabber.getCurrentPosition() != -1*robot.GRABBER_AUTOPOS) {robot.grabber.setTargetPosition(-1*robot.GRABBER_AUTOPOS);}
+            while(robot.grabber.getCurrentPosition() != -1*robot.GRABBER_AUTOPOS && home == true) {robot.grabber.setTargetPosition(-1*robot.GRABBER_AUTOPOS);}
             robot.grabber.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             robot.grabber.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             run = true;

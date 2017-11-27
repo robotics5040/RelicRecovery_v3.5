@@ -60,8 +60,10 @@ public class AutoTest extends AutoPull {
 
     @Override public void runOpMode() {
         robot.init(hardwareMap, true);
-        telemetry.addData("Running autoTest","now");
-        telemetry.update();
+
+        robot.grabber.setPower(0.75);
+        robot.grabber.setTargetPosition(robot.GRABBER_AUTOPOS);
+
         while (robot.gyro.isCalibrating()){
             telemetry.addLine("Calibrating gyro");
             telemetry.update();
@@ -73,22 +75,10 @@ public class AutoTest extends AutoPull {
         float heading = robot.gyro.getHeading();
         telemetry.addData("heading",heading);
         telemetry.update();
-        //int target = 90;
+        RotateTo(robot,90);
 
-
-
-        RotateTo(robot, 90);
-    }
-
-    public void onmiDrive (double sideways, double forward, double rotation)
-    {
-        try {
-            robot.leftMotor1.setPower(limit(((forward - sideways)/2) * 1 + (-.25 * rotation)));
-            robot.leftMotor2.setPower(limit(((forward + sideways)/2) * 1 + (-.25 * rotation)));
-            robot.rightMotor1.setPower(limit(((-forward - sideways)/2) * 1 + (-.25 * rotation)));
-            robot.rightMotor2.setPower(limit(((-forward + sideways)/2) * 1 + (-.25 * rotation)));
-        } catch (Exception e) {
-            RobotLog.ee(robot.MESSAGETAG, e.getStackTrace().toString());
-        }
+        telemetry.addData("grabberpos", robot.grabber.getCurrentPosition());
+        telemetry.update();
+        DriveFor(robot,2.0,0.0,0.0,0.0);
     }
 }
