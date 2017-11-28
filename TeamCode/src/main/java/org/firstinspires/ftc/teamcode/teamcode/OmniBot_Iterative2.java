@@ -60,7 +60,7 @@ public class OmniBot_Iterative2 extends OpMode{
     private double position = 0.0;
     public int  pressed = 0,up=10;
     double wrist_num = 0;
-    boolean run =false,done=false,aPressed=false,bPressed=false,xPressed=false,yPressed=true,closed = true;
+    boolean there=true,run =false,done=false,aPressed=false,bPressed=false,xPressed=false,yPressed=true,closed = true;
     ElapsedTime runtime = new ElapsedTime();
     /* Declare OpMode members. */
     private HardwareOmniRobot robot; // use the class created to define a Pushbot's hardware
@@ -205,10 +205,27 @@ public class OmniBot_Iterative2 extends OpMode{
         //grabber position
         if(home == true && run == false) {
             robot.grabber.setPower(0.75);
-            while(robot.grabber.getCurrentPosition() != -1*robot.GRABBER_AUTOPOS && home == true) {robot.grabber.setTargetPosition(-1*robot.GRABBER_AUTOPOS);}
+            robot.grabber.setTargetPosition(-1*robot.GRABBER_AUTOPOS);
+            /*while(robot.grabber.getCurrentPosition() != (-1*robot.GRABBER_AUTOPOS+10) && home == true) {
+                robot.grabber.setTargetPosition(-1*robot.GRABBER_AUTOPOS);
+                telemetry.addData("grabber moving",robot.grabber.getCurrentPosition());
+                telemetry.addData("home",home);
+                telemetry.addData("home2",gamepad2.guide);
+                telemetry.update();
+            }
+            robot.grabber.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            robot.grabber.setMode(DcMotor.RunMode.RUN_TO_POSITION);*/
+            run = true;
+            there = false;
+        }
+        else if(robot.grabber.getCurrentPosition() != (-1*robot.GRABBER_AUTOPOS) && there == false) {
+            telemetry.addLine("Waiting to get to bottom");
+            telemetry.update();
+        }
+        else if(robot.grabber.getCurrentPosition() == (-1*robot.GRABBER_AUTOPOS) && there == false) {
             robot.grabber.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             robot.grabber.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            run = true;
+            there = true;
         }
         else if(dup == true) {
 
@@ -289,11 +306,7 @@ public class OmniBot_Iterative2 extends OpMode{
         telemetry.addData("Y Button: ", y_button);
         telemetry.addData("2nd Left Trigger",LX);
         telemetry.addData("2nd Right Trigger",RX);
-        telemetry.addData("ID?",gamepad2.id);
-        telemetry.addData("Guide?",gamepad2.guide);
-        telemetry.addData("timestamp?",gamepad2.timestamp);
-        telemetry.addData("Wrist Position: ",wrist_num);
-        //telemetry.addData("Ultra front", robot.ultra_front.getDistance(DistanceUnit.CM));
+        telemetry.addData("home",gamepad2.guide);
         telemetry.addData("Ultra back", robot.ultra_back.getDistance(DistanceUnit.CM));
         telemetry.addData("Ultra left", robot.ultra_left.getDistance(DistanceUnit.CM));
         telemetry.addData("Ultra right", robot.ultra_right.getDistance(DistanceUnit.CM));

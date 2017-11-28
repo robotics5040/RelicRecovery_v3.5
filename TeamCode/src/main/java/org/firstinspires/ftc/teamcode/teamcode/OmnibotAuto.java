@@ -66,8 +66,8 @@ public class OmnibotAuto extends AutoPull {
 
         //Vuforia Stuff
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        int choosen = Vuforia(cameraMonitorViewId, "red");
-        telemetry.addData("VuMark", "%s visible", choosen);
+        //int choosen = Vuforia(cameraMonitorViewId, "red");
+        //telemetry.addData("VuMark", "%s visible", choosen);
         telemetry.update();
 
         robot.jknock.setPosition(0.45);
@@ -82,4 +82,6 @@ public class OmnibotAuto extends AutoPull {
         robot.grabber.setTargetPosition(0);
         DriveFor(robot,1.0, 0.0, 0.0, 0.0);
     }
+
+
 }

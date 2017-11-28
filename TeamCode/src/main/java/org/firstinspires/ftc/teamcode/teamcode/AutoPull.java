@@ -124,9 +124,9 @@ public class AutoPull extends LinearOpMode {
             telemetry.update();
             heading = robot.gyro.getHeading();
             if (degrees < heading) {
-                onmiDrive(robot, 0.0, 0.0, 0.38);
+                onmiDrive(robot, 0.0, 0.0, 0.36);
             } else if (degrees > heading) {
-                onmiDrive(robot, 0.0, 0.0, -0.38);
+                onmiDrive(robot, 0.0, 0.0, -0.36);
             }
             else {
                 onmiDrive(robot,0.0,0.0,0.0);
@@ -135,7 +135,7 @@ public class AutoPull extends LinearOpMode {
     }
 
     //vuforia
-    public int Vuforia(int cameraMonitorViewId, String side) {
+    /*public int Vuforia(int cameraMonitorViewId, String side) {
 
         int choosen = 0;
 
@@ -159,26 +159,26 @@ public class AutoPull extends LinearOpMode {
                     if(side == "red") {
                         switch (vuMark) {
                             case LEFT:
-                                choosen = 1;
+                                choosen = 3;
                                 break;
                             case CENTER:
                                 choosen = 2;
                                 break;
                             case RIGHT:
-                                choosen = 3;
+                                choosen = 1;
                                 break;
                         }
                     }
                     else {
                         switch (vuMark) {
                             case LEFT:
-                                choosen = 3;
+                                choosen = 1;
                                 break;
                             case CENTER:
                                 choosen = 2;
                                 break;
                             case RIGHT:
-                                choosen = 1;
+                                choosen = 3;
                                 break;
                         }
                     }
@@ -189,6 +189,6 @@ public class AutoPull extends LinearOpMode {
         }
 
         return choosen;
-    }
+    }*/
 }
 

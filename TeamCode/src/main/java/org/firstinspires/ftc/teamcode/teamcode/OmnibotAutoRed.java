@@ -66,8 +66,8 @@ public class OmnibotAutoRed extends AutoPull {
 
         //Vuforia Stuff
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        int choosen = Vuforia(cameraMonitorViewId, "red");
-        telemetry.addData("VuMark", "%s visible", choosen);
+        //int choosen = Vuforia(cameraMonitorViewId, "red");
+        //telemetry.addData("VuMark", "%s visible", choosen);
         telemetry.update();
 
         JewelKnock(robot,"red");

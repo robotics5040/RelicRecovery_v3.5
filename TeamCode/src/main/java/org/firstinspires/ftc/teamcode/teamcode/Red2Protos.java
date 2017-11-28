@@ -57,9 +57,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Omnibot: Blue1Protos", group="Omnibot")
+@Autonomous(name="Omnibot: Blue2Protos", group="Omnibot")
 //@Disabled
-public class Blue1Protos extends AutoPull {
+public class Red2Protos extends AutoPull {
 
     HardwareOmniRobot robot   = new HardwareOmniRobot();
     AutoPull robotauto = new AutoPull();
@@ -96,16 +96,16 @@ public class Blue1Protos extends AutoPull {
 
         switch (choosen) {
             case (1):
-                target = 101;
+                target = 50;
                 break;
             case (2):
-                target = 116;
+                target = 66;
                 break;
             case (3):
-                target = 136;
+                target = 84;
                 break;
             default:
-                target = 101;
+                target = 50;
                 break;
         }
 
@@ -122,7 +122,7 @@ public class Blue1Protos extends AutoPull {
 
         telemetry.update();
 
-        RotateTo(robot,270);
+        RotateTo(robot,0);
 
 
         robot.claw1.setPosition(0.3);
@@ -152,16 +152,16 @@ public class Blue1Protos extends AutoPull {
 
         boolean dis2 = false;
         while (dis2 == false && runtime.seconds() < 26 && opModeIsActive() && dis == true) {
-            double distanceRight = robot.ultra_right.getDistance(DistanceUnit.CM);
-            telemetry.addData("Right", distanceRight);
+            double distanceLeft = robot.ultra_left.getDistance(DistanceUnit.CM);
+            telemetry.addData("Right", distanceLeft);
             telemetry.update();
 
-            if (distanceRight > 2) { //eliminates the 1.242445621452 crap
-                if (distanceRight == target || distanceRight ==  65) {
+            if (distanceLeft > 2) { //eliminates the 1.242445621452 crap
+                if (distanceLeft == target) {
                     onmiDrive(robot,0.0, 0.0, 0.0);
                     dis2 = true;
 
-                } else if (distanceRight < target) {
+                } else if (distanceLeft < target) {
                     onmiDrive(robot,-0.3,0.0,0.0);
                     //NavX(0.0, -0.3);
                 } else {
@@ -170,12 +170,12 @@ public class Blue1Protos extends AutoPull {
                 }
             }
         }
-        //change
+
         telemetry.addLine("Lineup 2 Complete");
         telemetry.update();
 
         robot.dumper.setPower(0.4);
-        while (robot.dumper.getCurrentPosition() <= 475 && opModeIsActive() && runtime.seconds() < 28) {
+        while (robot.dumper.getCurrentPosition() <= 470 && opModeIsActive() && runtime.seconds() < 27) {
             robot.dumper.setTargetPosition(480);
         }
         while (robot.dumper.getCurrentPosition() >= 5 && opModeIsActive()) {

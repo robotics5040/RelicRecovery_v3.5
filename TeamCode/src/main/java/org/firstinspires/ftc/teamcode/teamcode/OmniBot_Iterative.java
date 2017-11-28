@@ -59,9 +59,9 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 //@Disabled
 public class OmniBot_Iterative extends OpMode{
     private double position = 0.0;
-    public int  pressed = 0;
+    public int  pressed = 0,up=10;
     double wrist_num = 0;
-    boolean aPressed=false,bPressed=false,xPressed=false,yPressed=true,closed = true;
+    boolean done=false,aPressed=false,bPressed=false,xPressed=false,yPressed=true,closed = true;
     ElapsedTime runtime = new ElapsedTime();
     /* Declare OpMode members. */
     private HardwareOmniRobot robot; // use the class created to define a Pushbot's hardware
@@ -81,7 +81,7 @@ public class OmniBot_Iterative extends OpMode{
          */
         robot.init(hardwareMap, false);
         robot.grabber.setPower(0.75);
-        robot.grabber.setTargetPosition(-1*robot.GRABBER_AUTOPOS);
+        robot.grabber.setTargetPosition(-1*robot.GRABBER_AUTOPOS+10);
 
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Say", "Hello Driver");    //
@@ -208,7 +208,28 @@ public class OmniBot_Iterative extends OpMode{
         robot.onmiDrive(side, front, rotate);
 
         //grabber position
-        if (left_bumper == true) {
+        if(dup == true) {
+
+            robot.grabber.setPower(0.75);
+            robot.grabber.setTargetPosition(up);
+            done = true;
+            up +=10;
+        }
+        else if(ddown == true) {
+            robot.grabber.setPower(0.75);
+            robot.grabber.setTargetPosition(-1*up);
+            done = true;
+            up +=10;
+
+        }
+        else if(done == true) {
+            up = 10;
+            robot.grabber.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            robot.grabber.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            done = false;
+        }
+
+        else if (left_bumper == true) {
             robot.grabber.setTargetPosition(1600);
 
         }

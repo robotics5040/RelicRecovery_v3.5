@@ -35,7 +35,12 @@ package org.firstinspires.ftc.teamcode.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
 /**
  * This file provides basic Telop driving for a Pushbot robot.
@@ -115,14 +120,9 @@ public class Blue2Protos extends AutoPull {
         robot.wheelie.setPower(0);
         DriveFor(robot,0.3,0.0,0.0,0.0);
 
-
-
-        robot.grabber.setTargetPosition(1200);
-
         telemetry.update();
-        RotateTo(robot,0);
 
-        RotateTo(robot,178);
+        RotateTo(robot,180);
 
 
         robot.claw1.setPosition(0.3);
@@ -137,10 +137,10 @@ public class Blue2Protos extends AutoPull {
             telemetry.addData("Back", distanceBack);
             telemetry.update();
 
-            if (distanceBack == 20) {
+            if (distanceBack == 21) {
                 onmiDrive(robot,0.0, 0.0, 0.0);
                 dis = true;
-            } else if (distanceBack > 20) {
+            } else if (distanceBack > 21) {
                 onmiDrive(robot,0.0, 0.3, 0.0);
             } else {
                 onmiDrive(robot,0.0, -0.3, 0.0);
@@ -175,7 +175,7 @@ public class Blue2Protos extends AutoPull {
         telemetry.update();
 
         robot.dumper.setPower(0.4);
-        while (robot.dumper.getCurrentPosition() <= 475 && opModeIsActive() && runtime.seconds() < 28) {
+        while (robot.dumper.getCurrentPosition() <= 470 && opModeIsActive() && runtime.seconds() < 27) {
             robot.dumper.setTargetPosition(480);
         }
         while (robot.dumper.getCurrentPosition() >= 5 && opModeIsActive()) {
@@ -191,7 +191,61 @@ public class Blue2Protos extends AutoPull {
         robot.claw2.setPosition(0.7);
         DriveFor(robot,1.0, 0.0, 0.0, 0.0);
 
+    }
+
+    public int Vuforia(int cameraMonitorViewId, String side) {
+
+        int choosen = 0;
+
+        try {
+            VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
+
+            parameters.vuforiaLicenseKey = "AUBrQCz/////AAAAGXg5njs2FEpBgEGX/o6QppZq8c+tG+wbAB+cjpPcC5bwtGmv+kD1lqGbNrlHctdvrdmTJ9Fm1OseZYM15VBaiF++ICnjCSY/IHPhjGW9TXDMAOv/Pdz/T5H86PduPVVKvdGiQ/gpE8v6HePezWRRWG6CTA21itPZfj0xDuHdqrAGGiIQXcUbCTfRAkY7HwwRfQOM1aDhmeAaOvkPPCnaA228iposAByBHmA2rkx4/SmTtN82rtOoRn3/I1PA9RxMiWHWlU67yMQW4ExpTe2eRtq7fPGCCjFeXqOl57au/rZySASURemt7pwbprumwoyqYLgK9eJ6hC2UqkJO5GFzTi3XiDNOYcaFOkP71P5NE/BB    ";
+
+            parameters.cameraDirection = VuforiaLocalizer.CameraDirection.FRONT;
+            VuforiaLocalizer vuforia = ClassFactory.createVuforiaLocalizer(parameters);
+
+            VuforiaTrackables relicTrackables = vuforia.loadTrackablesFromAsset("RelicVuMark");
+            VuforiaTrackable relicTemplate = relicTrackables.get(0);
+            relicTemplate.setName("relicVuMarkTemplate"); // can help in debugging; otherwise not necessary
+
+            relicTrackables.activate();
+            runtime.reset();
+            while (opModeIsActive() && choosen == 0 && runtime.seconds() < 3) {
+                RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
+                if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
+                    if(side == "red") {
+                        switch (vuMark) {
+                            case LEFT:
+                                choosen = 3;
+                                break;
+                            case CENTER:
+                                choosen = 2;
+                                break;
+                            case RIGHT:
+                                choosen = 1;
+                                break;
+                        }
+                    }
+                    else {
+                        switch (vuMark) {
+                            case LEFT:
+                                choosen = 1;
+                                break;
+                            case CENTER:
+                                choosen = 2;
+                                break;
+                            case RIGHT:
+                                choosen = 3;
+                                break;
+                        }
+                    }
+                }
+            }
+        }catch (Exception e){
+            choosen = 0;
         }
 
-
+        return choosen;
+    }
 }
