@@ -62,7 +62,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 public class Blue2Protos extends AutoPull {
 
     HardwareOmniRobot robot   = new HardwareOmniRobot();
-    AutoPull robotauto = new AutoPull();
     ElapsedTime runtime = new ElapsedTime();
 
     @Override public void runOpMode() throws InterruptedException {

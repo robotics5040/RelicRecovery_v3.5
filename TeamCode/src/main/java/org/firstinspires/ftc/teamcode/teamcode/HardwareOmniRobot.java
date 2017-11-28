@@ -123,7 +123,7 @@ public class HardwareOmniRobot
         leftMotor2.setPower(0);
         rightMotor2.setPower(0);
         wheelie.setPower(0);
-        jknock.setPosition(0.7);
+        jknock.setPosition(0.8);
         claw1.setPosition(0.0);
         claw2.setPosition(1.0);
         dumper.setPower(0);

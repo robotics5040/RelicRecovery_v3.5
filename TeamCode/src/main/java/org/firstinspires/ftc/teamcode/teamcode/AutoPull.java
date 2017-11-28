@@ -113,20 +113,21 @@ public class AutoPull extends LinearOpMode {
         }
         robot.jkcolor.enableLed(false);
         robot.jkcolor2.enableLed(false);
-        if(robot.jknock.getPosition() != 0.7) {robot.jknock.setPosition(0.7);}
+        if(robot.jknock.getPosition() != 0.7) {robot.jknock.setPosition(0.8);}
     }
 
     //rotates to degree. goes from 0 to 259 so no negative inputs
     public void RotateTo(HardwareOmniRobot robot,int degrees) {
         float heading = robot.gyro.getHeading();
-        while(heading != degrees && opModeIsActive()) {
+        double speed = 0.38;
+        while(heading != degrees  && opModeIsActive()) {
             telemetry.addData("HEADING",heading);
             telemetry.update();
             heading = robot.gyro.getHeading();
             if (degrees < heading) {
-                onmiDrive(robot, 0.0, 0.0, 0.36);
+                onmiDrive(robot, 0.0, 0.0, speed);
             } else if (degrees > heading) {
-                onmiDrive(robot, 0.0, 0.0, -0.36);
+                onmiDrive(robot, 0.0, 0.0, -speed);
             }
             else {
                 onmiDrive(robot,0.0,0.0,0.0);

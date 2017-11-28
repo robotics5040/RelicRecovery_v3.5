@@ -57,12 +57,11 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Omnibot: Blue2Protos", group="Omnibot")
+@Autonomous(name="Omnibot: Red2Protos", group="Omnibot")
 //@Disabled
 public class Red2Protos extends AutoPull {
 
     HardwareOmniRobot robot   = new HardwareOmniRobot();
-    AutoPull robotauto = new AutoPull();
     ElapsedTime runtime = new ElapsedTime();
 
     @Override public void runOpMode() throws InterruptedException {

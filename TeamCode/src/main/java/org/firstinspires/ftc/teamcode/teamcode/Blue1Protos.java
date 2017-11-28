@@ -62,7 +62,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 public class Blue1Protos extends AutoPull {
 
     HardwareOmniRobot robot   = new HardwareOmniRobot();
-    AutoPull robotauto = new AutoPull();
     ElapsedTime runtime = new ElapsedTime();
 
     @Override public void runOpMode() throws InterruptedException {
@@ -96,16 +95,16 @@ public class Blue1Protos extends AutoPull {
 
         switch (choosen) {
             case (1):
-                target = 101;
+                target = 99;
                 break;
             case (2):
-                target = 116;
+                target = 114;
                 break;
             case (3):
-                target = 136;
+                target = 134;
                 break;
             default:
-                target = 101;
+                target = 99;
                 break;
         }
 
@@ -114,7 +113,7 @@ public class Blue1Protos extends AutoPull {
 
         JewelKnock(robot,"blue");
         DriveFor(robot,0.3,0.0,0.0,0.0);
-        if(robot.jknock.getPosition() != 0.7) {robot.jknock.setPosition(0.7);}
+        if(robot.jknock.getPosition() != 0.8) {robot.jknock.setPosition(0.8);}
         robot.wheelie.setPower(1);
         DriveFor(robot,1.0,1.0,0.0,0.0);
         robot.wheelie.setPower(0);
