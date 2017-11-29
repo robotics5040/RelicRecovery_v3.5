@@ -76,6 +76,16 @@ public class Red2Protos extends AutoPull {
 
         RobotLog.ii("5040MSG","Grabber set up");
 
+
+        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
+
+        parameters.vuforiaLicenseKey = "AUBrQCz/////AAAAGXg5njs2FEpBgEGX/o6QppZq8c+tG+wbAB+cjpPcC5bwtGmv+kD1lqGbNrlHctdvrdmTJ9Fm1OseZYM15VBaiF++ICnjCSY/IHPhjGW9TXDMAOv/Pdz/T5H86PduPVVKvdGiQ/gpE8v6HePezWRRWG6CTA21itPZfj0xDuHdqrAGGiIQXcUbCTfRAkY7HwwRfQOM1aDhmeAaOvkPPCnaA228iposAByBHmA2rkx4/SmTtN82rtOoRn3/I1PA9RxMiWHWlU67yMQW4ExpTe2eRtq7fPGCCjFeXqOl57au/rZySASURemt7pwbprumwoyqYLgK9eJ6hC2UqkJO5GFzTi3XiDNOYcaFOkP71P5NE/BB    ";
+
+        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.FRONT;
+        VuforiaLocalizer vuforia = ClassFactory.createVuforiaLocalizer(parameters);
+
+
         while (robot.gyro.isCalibrating()){
             telemetry.addLine("Calibrating gyro");
             telemetry.update();
@@ -97,8 +107,8 @@ public class Red2Protos extends AutoPull {
         runtime2.reset();
 
         RobotLog.ii("5040MSG","Run vufloria");
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        int choosen = Vuforia(cameraMonitorViewId, "red");
+        //int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        int choosen = VuforiaSimple(cameraMonitorViewId, "red",vuforia);
         int target = 0;
 
         switch (choosen) {
@@ -171,9 +181,13 @@ public class Red2Protos extends AutoPull {
                     if(count >= 2) {
                         dis2 = true;
                     }
-                    count ++;
-                    RotateTo0(robot,0);
-                    runtime.reset();
+                    else {
+                        count ++;
+                        DriveFor(robot,0.3,0,0,0);
+                        RotateTo0(robot,0);
+                        DriveFor(robot,0.3,0,0,0);
+                        runtime.reset();
+                    }
 
                 } else if (distanceLeft < target) {
                     onmiDrive(robot,0.3,0.0,0.0);
@@ -216,17 +230,37 @@ public class Red2Protos extends AutoPull {
 
     }
 
-    public int Vuforia(int cameraMonitorViewId, String side) {
+    public void RotateTo0(HardwareOmniRobot robot,int degrees) {
+        float heading = robot.gyro.getHeading();
+        double speed = 0.38;
+        while(heading != degrees  && opModeIsActive()) {
+            telemetry.addData("HEADING",heading);
+            telemetry.update();
+            heading = robot.gyro.getHeading();
+            if (degrees > heading) {
+                onmiDrive(robot, 0.0, 0.0, -speed);
+            } else if(heading > 300) {
+                onmiDrive(robot, 0.0, 0.0, -speed);
+            } else if (degrees < heading) {
+                onmiDrive(robot, 0.0, 0.0, speed);
+            }
+            else {
+                onmiDrive(robot,0.0,0.0,0.0);
+            }
+        }
+    }
+
+    public int VuforiaSimple(int cameraMonitorViewId, String side, VuforiaLocalizer vuforia) {
 
         int choosen = 0;
 
         try {
-            VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
+            /*VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
 
             parameters.vuforiaLicenseKey = "AUBrQCz/////AAAAGXg5njs2FEpBgEGX/o6QppZq8c+tG+wbAB+cjpPcC5bwtGmv+kD1lqGbNrlHctdvrdmTJ9Fm1OseZYM15VBaiF++ICnjCSY/IHPhjGW9TXDMAOv/Pdz/T5H86PduPVVKvdGiQ/gpE8v6HePezWRRWG6CTA21itPZfj0xDuHdqrAGGiIQXcUbCTfRAkY7HwwRfQOM1aDhmeAaOvkPPCnaA228iposAByBHmA2rkx4/SmTtN82rtOoRn3/I1PA9RxMiWHWlU67yMQW4ExpTe2eRtq7fPGCCjFeXqOl57au/rZySASURemt7pwbprumwoyqYLgK9eJ6hC2UqkJO5GFzTi3XiDNOYcaFOkP71P5NE/BB    ";
 
             parameters.cameraDirection = VuforiaLocalizer.CameraDirection.FRONT;
-            VuforiaLocalizer vuforia = ClassFactory.createVuforiaLocalizer(parameters);
+            VuforiaLocalizer vuforia = ClassFactory.createVuforiaLocalizer(parameters);*/
 
             VuforiaTrackables relicTrackables = vuforia.loadTrackablesFromAsset("RelicVuMark");
             VuforiaTrackable relicTemplate = relicTrackables.get(0);
@@ -270,25 +304,5 @@ public class Red2Protos extends AutoPull {
         }
 
         return choosen;
-    }
-
-    public void RotateTo0(HardwareOmniRobot robot,int degrees) {
-        float heading = robot.gyro.getHeading();
-        double speed = 0.38;
-        while(heading != degrees  && opModeIsActive()) {
-            telemetry.addData("HEADING",heading);
-            telemetry.update();
-            heading = robot.gyro.getHeading();
-            if (degrees > heading) {
-                onmiDrive(robot, 0.0, 0.0, -speed);
-            } else if(heading > 300) {
-                onmiDrive(robot, 0.0, 0.0, -speed);
-            } else if (degrees < heading) {
-                onmiDrive(robot, 0.0, 0.0, speed);
-            }
-            else {
-                onmiDrive(robot,0.0,0.0,0.0);
-            }
-        }
     }
 }

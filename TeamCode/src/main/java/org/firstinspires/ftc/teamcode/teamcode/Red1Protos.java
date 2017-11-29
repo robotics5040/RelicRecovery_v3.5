@@ -34,6 +34,7 @@ package org.firstinspires.ftc.teamcode.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -57,9 +58,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Omnibot: Blue2Protos", group="Omnibot")
+@Autonomous(name="Omnibot: Red1Protos", group="Omnibot")
 //@Disabled
-public class Blue2Protos extends AutoPull {
+public class Red1Protos extends AutoPull {
 
     HardwareOmniRobot robot   = new HardwareOmniRobot();
     ElapsedTime runtime = new ElapsedTime();
@@ -86,49 +87,50 @@ public class Blue2Protos extends AutoPull {
         telemetry.addData("Status", "Ready to run");
         telemetry.update();
 
-
+        RobotLog.ii("5040MSG","Pre Start");
         //waitForStart();
         runtime.reset();
-        runtime2.reset();
-
+        RobotLog.ii("5040MSG","Post Start");
+        runtime.reset();
+        RobotLog.ii("5040MSG","Pre Vuforia");
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        int choosen = Vuforia(cameraMonitorViewId, "blue");
+        int choosen = Vuforia(cameraMonitorViewId, "red");
         int target = 0;
 
         switch (choosen) {
             case (1):
-                target = 50;
+                target = 99;
                 break;
             case (2):
-                target = 66;
+                target = 114;
                 break;
             case (3):
-                target = 84;
+                target = 134;
                 break;
             default:
-                target = 50;
+                target = 99;
                 break;
         }
-
+        RobotLog.ii("5040MSG","Post Vuforia");
         telemetry.addData("VuMark", "%s visible", choosen);
         telemetry.update();
 
-        JewelKnock(robot,"blue");
+        JewelKnock(robot,"red");
         DriveFor(robot,0.3,0.0,0.0,0.0);
         if(robot.jknock.getPosition() != robot.JKUP) {robot.jknock.setPosition(robot.JKUP);}
-        robot.wheelie.setPower(1);
-        DriveFor(robot,1.0,1.0,0.0,0.0);
+        robot.wheelie.setPower(-1);
+        DriveFor(robot,1.0,-1.0,0.0,0.0);
         robot.wheelie.setPower(0);
         DriveFor(robot,0.3,0.0,0.0,0.0);
 
         telemetry.update();
 
-        DriveFor(robot,1.8,0.0,0.0,1.0);
-        RotateTo(robot,180);
+        DriveFor(robot,0.9,0.0,0.0,1.0);
+        RotateTo(robot,90);
 
 
-        robot.claw1.setPosition(0.5);
-        robot.claw2.setPosition(0.4);
+        robot.claw1.setPosition(0.3);
+        robot.claw2.setPosition(0.6);
 
         boolean dis = false;
 
@@ -139,16 +141,16 @@ public class Blue2Protos extends AutoPull {
             telemetry.addData("Back", distanceBack);
             telemetry.update();
 
-            if (distanceBack == 17) {
+            if (distanceBack == 22) {
                 onmiDrive(robot,0.0, 0.0, 0.0);
                 dis = true;
-            } else if (distanceBack > 17) {
+            } else if (distanceBack > 22) {
                 onmiDrive(robot,0.0, 0.3, 0.0);
             } else {
                 onmiDrive(robot,0.0, -0.3, 0.0);
             }
         }
-
+        RobotLog.ii("5040MSG","Post BackPos");
         telemetry.addLine("Lineup 1 Complete");
         telemetry.update();
 
@@ -156,44 +158,42 @@ public class Blue2Protos extends AutoPull {
         int count = 0;
         runtime.reset();
         while (dis2 == false && runtime2.seconds() < 26 && opModeIsActive() && dis == true) {
-            double distanceRight = robot.ultra_right.getDistance(DistanceUnit.CM);
-            telemetry.addData("Right", distanceRight);
+            double distanceLeft = robot.ultra_left.getDistance(DistanceUnit.CM);
+            telemetry.addData("Left", distanceLeft);
             telemetry.update();
 
-            if (distanceRight > 2) { //eliminates the 1.242445621452 crap
-                if (distanceRight == target) {
+            if (distanceLeft > 2) { //eliminates the 1.242445621452 crap
+                if (distanceLeft == target || distanceLeft ==  65) {
                     onmiDrive(robot,0.0, 0.0, 0.0);
-                    if(count >= 1) {
+                    if(count >= 2) {
                         dis2 = true;
                     }
                     count ++;
-                    RotateTo(robot,180);
+                    RotateTo(robot,90);
                     runtime.reset();
-                    onmiDrive(robot,0.0, 0.0, 0.0);
 
-                } else if (distanceRight < target) {
-                    onmiDrive(robot,-0.3,0.0,0.0);
+                } else if (distanceLeft < target) {
+                    onmiDrive(robot,0.3,0.0,0.0);
                     //NavX(0.0, -0.3);
                 } else {
-                    onmiDrive(robot, 0.3, 0.0, 0.0);
+                    onmiDrive(robot,-0.3,0.0,0.0);
                     //NavX(0.0, 0.3);
                 }
-                /*if(runtime.seconds() > 1.0 && choosen != 1) {
+                if(runtime.seconds() > 1.0 && choosen != 1) {
                     runtime.reset();
-                    RotateTo(robot,180);
-                }*/
+                    RotateTo(robot,90);
+                }
             }
             else {
                 onmiDrive(robot,0,0,0);
             }
         }
-
+        RobotLog.ii("5040MSG","Post RightPos");
         telemetry.addLine("Lineup 2 Complete");
         telemetry.update();
 
         robot.dumper.setPower(0.4);
-        onmiDrive(robot,0.0, 0.0, 0.0);
-        while (robot.dumper.getCurrentPosition() <= 470 && opModeIsActive() && runtime2.seconds() < 27) {
+        while (robot.dumper.getCurrentPosition() <= 475 && opModeIsActive() && runtime2.seconds() < 28) {
             robot.dumper.setTargetPosition(480);
         }
         while (robot.dumper.getCurrentPosition() >= 5 && opModeIsActive()) {
@@ -203,10 +203,8 @@ public class Blue2Protos extends AutoPull {
 
         DriveFor(robot,0.5,0.0,0.0,0.0);
         DriveFor(robot,0.5, 0.4, 0.0, 0.0);
-        if(runtime2.seconds() < 29) {
-            DriveFor(robot, 1.0, -0.8, 0.0, 0.0);
-            DriveFor(robot, 0.5, 0.4, 0.0, 0.0);
-        }
+        DriveFor(robot,1.0, -0.8, 0.0, 0.0);
+        DriveFor(robot,0.5, 0.4, 0.0, 0.0);
         robot.claw1.setPosition(0.3);
         robot.claw2.setPosition(0.7);
         DriveFor(robot,1.0, 0.0, 0.0, 0.0);

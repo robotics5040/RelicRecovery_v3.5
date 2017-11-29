@@ -136,7 +136,7 @@ public class AutoPull extends LinearOpMode {
     }
 
     //vuforia
-    /*public int Vuforia(int cameraMonitorViewId, String side) {
+    public int Vuforia(int cameraMonitorViewId, String side) {
 
         int choosen = 0;
 
@@ -190,6 +190,6 @@ public class AutoPull extends LinearOpMode {
         }
 
         return choosen;
-    }*/
+    }
 }
 
