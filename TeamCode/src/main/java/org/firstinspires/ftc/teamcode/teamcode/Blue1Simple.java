@@ -74,7 +74,7 @@ public class Blue1Simple extends AutoPull {
         //runs from knocking off jewel to driving off platform.
         JewelKnock(robot,"blue");
         DriveFor(robot,0.3,0.0,0.0,0.0);
-        //if(robot.jknock.getPosition() != 0.7) {robot.jknock.setPosition(0.7);}
+        if(robot.jknock.getPosition() != robot.JKUP) {robot.jknock.setPosition(robot.JKUP);}
         robot.wheelie.setPower(1);
         DriveFor(robot,1.4,1.0,0.0,0.0);
         robot.wheelie.setPower(0);

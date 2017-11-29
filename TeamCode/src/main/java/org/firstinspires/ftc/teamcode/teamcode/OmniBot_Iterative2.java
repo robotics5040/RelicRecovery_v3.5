@@ -206,23 +206,14 @@ public class OmniBot_Iterative2 extends OpMode{
         if(home == true && run == false) {
             robot.grabber.setPower(0.75);
             robot.grabber.setTargetPosition(-1*robot.GRABBER_AUTOPOS);
-            /*while(robot.grabber.getCurrentPosition() != (-1*robot.GRABBER_AUTOPOS+10) && home == true) {
-                robot.grabber.setTargetPosition(-1*robot.GRABBER_AUTOPOS);
-                telemetry.addData("grabber moving",robot.grabber.getCurrentPosition());
-                telemetry.addData("home",home);
-                telemetry.addData("home2",gamepad2.guide);
-                telemetry.update();
-            }
-            robot.grabber.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            robot.grabber.setMode(DcMotor.RunMode.RUN_TO_POSITION);*/
             run = true;
             there = false;
         }
-        else if(robot.grabber.getCurrentPosition() != (-1*robot.GRABBER_AUTOPOS) && there == false) {
+        else if(robot.grabber.getCurrentPosition() >     ((-1*robot.GRABBER_AUTOPOS)+10) && there == false) {
             telemetry.addLine("Waiting to get to bottom");
             telemetry.update();
         }
-        else if(robot.grabber.getCurrentPosition() == (-1*robot.GRABBER_AUTOPOS) && there == false) {
+        else if(robot.grabber.getCurrentPosition() <= ((-1*robot.GRABBER_AUTOPOS)+10) && there == false) {
             robot.grabber.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             robot.grabber.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             there = true;

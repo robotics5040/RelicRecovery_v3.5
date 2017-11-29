@@ -39,6 +39,7 @@ public class HardwareOmniRobot
     ModernRoboticsI2cRangeSensor ultra_right, ultra_left, ultra_back;
 
     public final int GRABBER_AUTOPOS = 1395;
+    public final double JKUP = 0.8;
 
     /* Public OpMode members. */
     public AnalogInput flex = null;
@@ -85,6 +86,7 @@ public class HardwareOmniRobot
         leftMotor2 = hwMap.dcMotor.get("left_motor2");
         rightMotor1 = hwMap.dcMotor.get("right_motor1");
         rightMotor2 = hwMap.dcMotor.get("right_motor2");
+        RobotLog.ii("5040MSGHW","Motors gotten");
         wheelie = hwMap.dcMotor.get("wheelie");
         grabber = hwMap.dcMotor.get("grabber");
         dumper = hwMap.dcMotor.get("dumper");
@@ -93,6 +95,7 @@ public class HardwareOmniRobot
         jknock = hwMap.servo.get("jknock");
         jkcolor = hwMap.get(ColorSensor.class, "color_sense");
         jkcolor2 = hwMap.get(ColorSensor.class, "color");
+        RobotLog.ii("5040MSGHW","Everything but ultras gotten");
 
         jkcolor2.setI2cAddress(I2cAddr.create8bit(0x28));
 
@@ -103,7 +106,7 @@ public class HardwareOmniRobot
         ultra_left.setI2cAddress(I2cAddr.create8bit(0x12));
         ultra_right.setI2cAddress(I2cAddr.create8bit(0x14));
         ultra_back.setI2cAddress(I2cAddr.create8bit(0x16));
-
+        RobotLog.ii("5040MSGHW","Everything set up");
 
         flex = hwMap.analogInput.get("flx");
 
@@ -117,11 +120,14 @@ public class HardwareOmniRobot
         dumper.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         dumper.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
+        RobotLog.ii("5040MSGHW","Everything setMode adn Direction run");
+
         // Set all motors to zero power
         leftMotor1.setPower(0);
         rightMotor1.setPower(0);
         leftMotor2.setPower(0);
         rightMotor2.setPower(0);
+        RobotLog.ii("5040MSGHW","Drive Train setPower");
         wheelie.setPower(0);
         jknock.setPosition(0.8);
         claw1.setPosition(0.0);
@@ -133,17 +139,6 @@ public class HardwareOmniRobot
             gyro.calibrate();
         }
 
-    }
-
-    public void RotateTo(int degrees) {
-        int heading = gyro.getHeading();
-        while(heading != degrees)
-            if(degrees < heading) {
-                onmiDrive(0.0,0.0,-0.7);
-            }
-            else {
-                onmiDrive(0.0,0.0,0.7);
-            }
     }
 
     /***

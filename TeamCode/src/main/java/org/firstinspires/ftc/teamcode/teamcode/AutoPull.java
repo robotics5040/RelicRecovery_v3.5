@@ -74,7 +74,7 @@ public class AutoPull extends LinearOpMode {
     //jewel code
     public void JewelKnock(HardwareOmniRobot robot,String side){
 
-        robot.jknock.setPosition(0.0);
+        robot.jknock.setPosition(0.15);
         robot.jkcolor.enableLed(true);
         robot.jkcolor2.enableLed(true);
         DriveFor(robot,1.5,0.0,0.0,0.0);
@@ -88,7 +88,7 @@ public class AutoPull extends LinearOpMode {
         while (opModeIsActive() && decided == false && runtime.seconds() < 2) {
             if (color1r < 2 && color1b< 2 && color2r < 2 && color2b < 2) {
                 decided = true;
-                robot.jknock.setPosition(0.7);
+                robot.jknock.setPosition(robot.JKUP);
             }
             else if(side == "blue") {
                 if((color1b>=2 && color1r<2) || (color2b<2 && color2r>=2)) {
@@ -113,7 +113,7 @@ public class AutoPull extends LinearOpMode {
         }
         robot.jkcolor.enableLed(false);
         robot.jkcolor2.enableLed(false);
-        if(robot.jknock.getPosition() != 0.7) {robot.jknock.setPosition(0.8);}
+        if(robot.jknock.getPosition() != robot.JKUP) {robot.jknock.setPosition(robot.JKUP);}
     }
 
     //rotates to degree. goes from 0 to 259 so no negative inputs
