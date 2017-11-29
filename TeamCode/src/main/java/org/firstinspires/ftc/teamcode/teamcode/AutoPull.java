@@ -136,17 +136,11 @@ public class AutoPull extends LinearOpMode {
     }
 
     //vuforia
-    public int Vuforia(int cameraMonitorViewId, String side) {
+    public int Vuforia(int cameraMonitorViewId, String side, VuforiaLocalizer vuforia) {
 
         int choosen = 0;
 
         try {
-            VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
-
-            parameters.vuforiaLicenseKey = "AUBrQCz/////AAAAGXg5njs2FEpBgEGX/o6QppZq8c+tG+wbAB+cjpPcC5bwtGmv+kD1lqGbNrlHctdvrdmTJ9Fm1OseZYM15VBaiF++ICnjCSY/IHPhjGW9TXDMAOv/Pdz/T5H86PduPVVKvdGiQ/gpE8v6HePezWRRWG6CTA21itPZfj0xDuHdqrAGGiIQXcUbCTfRAkY7HwwRfQOM1aDhmeAaOvkPPCnaA228iposAByBHmA2rkx4/SmTtN82rtOoRn3/I1PA9RxMiWHWlU67yMQW4ExpTe2eRtq7fPGCCjFeXqOl57au/rZySASURemt7pwbprumwoyqYLgK9eJ6hC2UqkJO5GFzTi3XiDNOYcaFOkP71P5NE/BB    ";
-
-            parameters.cameraDirection = VuforiaLocalizer.CameraDirection.FRONT;
-            VuforiaLocalizer vuforia = ClassFactory.createVuforiaLocalizer(parameters);
 
             VuforiaTrackables relicTrackables = vuforia.loadTrackablesFromAsset("RelicVuMark");
             VuforiaTrackable relicTemplate = relicTrackables.get(0);

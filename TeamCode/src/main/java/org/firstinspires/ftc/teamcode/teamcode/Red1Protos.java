@@ -72,6 +72,17 @@ public class Red1Protos extends AutoPull {
         robot.grabber.setPower(0.75);
         robot.grabber.setTargetPosition(robot.GRABBER_AUTOPOS);
 
+
+        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
+
+        parameters.vuforiaLicenseKey = "AUBrQCz/////AAAAGXg5njs2FEpBgEGX/o6QppZq8c+tG+wbAB+cjpPcC5bwtGmv+kD1lqGbNrlHctdvrdmTJ9Fm1OseZYM15VBaiF++ICnjCSY/IHPhjGW9TXDMAOv/Pdz/T5H86PduPVVKvdGiQ/gpE8v6HePezWRRWG6CTA21itPZfj0xDuHdqrAGGiIQXcUbCTfRAkY7HwwRfQOM1aDhmeAaOvkPPCnaA228iposAByBHmA2rkx4/SmTtN82rtOoRn3/I1PA9RxMiWHWlU67yMQW4ExpTe2eRtq7fPGCCjFeXqOl57au/rZySASURemt7pwbprumwoyqYLgK9eJ6hC2UqkJO5GFzTi3XiDNOYcaFOkP71P5NE/BB    ";
+
+        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.FRONT;
+        VuforiaLocalizer vuforia = ClassFactory.createVuforiaLocalizer(parameters);
+
+
+
         while (robot.gyro.isCalibrating()){
             telemetry.addLine("Calibrating gyro");
             telemetry.update();
@@ -93,8 +104,7 @@ public class Red1Protos extends AutoPull {
         RobotLog.ii("5040MSG","Post Start");
         runtime.reset();
         RobotLog.ii("5040MSG","Pre Vuforia");
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        int choosen = Vuforia(cameraMonitorViewId, "red");
+        int choosen = Vuforia(cameraMonitorViewId, "red", vuforia);
         int target = 0;
 
         switch (choosen) {
@@ -126,7 +136,7 @@ public class Red1Protos extends AutoPull {
         telemetry.update();
 
         DriveFor(robot,0.9,0.0,0.0,1.0);
-        RotateTo(robot,90);
+        RotateTo(robot,270);
 
 
         robot.claw1.setPosition(0.3);
