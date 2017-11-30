@@ -84,6 +84,11 @@ public class AutoPull extends LinearOpMode {
         int color1r = robot.jkcolor.red();
         int color2b = robot.jkcolor2.blue();
         int color2r = robot.jkcolor2.red();
+        telemetry.addData("Color 1b", color1b);
+        telemetry.addData("Color 1r", color1r);
+        telemetry.addData("Color 2b", color2b);
+        telemetry.addData("Color 2r", color2r);
+        telemetry.update();
 
         while (opModeIsActive() && decided == false && runtime.seconds() < 2) {
             if (color1r < 2 && color1b< 2 && color2r < 2 && color2b < 2) {
