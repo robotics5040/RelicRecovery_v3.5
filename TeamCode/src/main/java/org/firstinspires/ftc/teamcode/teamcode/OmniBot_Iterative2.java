@@ -315,7 +315,7 @@ public class OmniBot_Iterative2 extends OpMode{
         telemetry.addData("Ultra left", robot.ultra_left.getDistance(DistanceUnit.CM));
         telemetry.addData("Ultra right", robot.ultra_right.getDistance(DistanceUnit.CM));
         */
-        telemetry.addData("Ultra Sonic Voltage ", ((robot.ultraSonic.getVoltage() * 1000) / 512));
+        telemetry.addData("Ultra Sonic Voltage ", ((robot.ultraSonic.getVoltage() / 5) * 512));
         telemetry.addLine("What is my name?: Spitz");
         telemetry.addData("rotate",rotate);
 
