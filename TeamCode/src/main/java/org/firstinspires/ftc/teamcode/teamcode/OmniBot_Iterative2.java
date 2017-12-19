@@ -103,7 +103,7 @@ public class OmniBot_Iterative2 extends OpMode{
      */
     @Override
     public void loop() {
-        double left_stick_x, left_stick_y,right_stick_x,right_stick_y,power, left_trigger, right_trigger,LX,RX,rotate=0,front=0,side=0;
+        double left_stick_x, left_stick_y,right_stick_x,right_stick_y,left_trigger,right_trigger1,LX,RX,rotate=0,front=0,side=0;
         boolean home, b_button1,a_button1,y_button1,x_button1,left_bumper, right_bumper, a_button, b_button, x_button, y_button,dup,ddown,dleft,dright,left_bump1,right_bump1, d_up1,d_down1,d_left1,d_right1,stick_press, stick_press1;
 
 
@@ -116,7 +116,7 @@ public class OmniBot_Iterative2 extends OpMode{
         left_bumper = gamepad2.left_bumper;
         right_bumper = gamepad2.right_bumper;
         left_trigger = gamepad2.left_trigger;
-        right_trigger = gamepad1.right_trigger;
+        right_trigger1 = gamepad1.right_trigger;
         a_button = gamepad2.a;
         b_button = gamepad2.b;
         x_button = gamepad2.x;
@@ -146,20 +146,20 @@ public class OmniBot_Iterative2 extends OpMode{
 
         //slight adjustments for driver
         if(d_down1 == true) {
-            left_stick_y = 0.4;
+            left_stick_y = 0.5;
         }
         if(d_up1 == true) {
-            left_stick_y = -0.4;
+            left_stick_y = -0.5;
         }
         if(d_left1 == true) {
-            left_stick_x = -0.4;
+            left_stick_x = -0.5;
         }
         if(d_right1 == true) {
-            left_stick_x = 0.4;
+            left_stick_x = 0.5;
         }
 
         //changes front of robot for driver using a,b,x,y
-        if(a_button1 == true || aPressed == true) {
+        if(y_button1 == true || aPressed == true) {
             front = left_stick_y * -1;
             side = left_stick_x * -1;
             rotate = right_stick_x*-1;
@@ -169,7 +169,7 @@ public class OmniBot_Iterative2 extends OpMode{
             xPressed = false;
             yPressed = false;
         }
-        if(b_button1 == true || bPressed == true) {
+        if(x_button1 == true || bPressed == true) {
             front = left_stick_x;
             side = left_stick_y*-1;
             rotate = right_stick_y*-1;
@@ -179,7 +179,7 @@ public class OmniBot_Iterative2 extends OpMode{
             xPressed = false;
             yPressed = false;
         }
-        if(x_button1 == true || xPressed == true) {
+        if(b_button1 == true || xPressed == true) {
             front = left_stick_x*-1;
             side = left_stick_y;
             rotate = right_stick_y;
@@ -189,7 +189,7 @@ public class OmniBot_Iterative2 extends OpMode{
             xPressed = true;
             yPressed = false;
         }
-        if(y_button1 == true || yPressed == true) {
+        if(a_button1 == true || yPressed == true) {
             front = left_stick_y;
             side = left_stick_x;
             rotate = right_stick_x;
@@ -259,6 +259,14 @@ public class OmniBot_Iterative2 extends OpMode{
             robot.wheelie.setPower(0.0);
         }
 
+        //Jewel Remover Controls
+        if(right_trigger1 > 0.2) {
+            robot.jewelGrab.setPosition(0.25);
+        }
+        else {
+            robot.jewelGrab.setPosition(0.98);
+        }
+
         //dumper controlls
         if (right_bumper == true) {
             robot.dumper.setTargetPosition(480);
@@ -290,11 +298,15 @@ public class OmniBot_Iterative2 extends OpMode{
         telemetry.addData("Left Bumper: ", left_bumper);
         telemetry.addData("Right Bumper: ", right_bumper );
         telemetry.addData("Left Trigger: ", left_trigger);
-        telemetry.addData("Right Trigger: ", right_trigger);
+        telemetry.addData("Right Trigger: ", right_trigger1);
         telemetry.addData("A Button: ",a_button);
         telemetry.addData("B Button: ",b_button);
         telemetry.addData("X Button: ",x_button);
         telemetry.addData("Y Button: ", y_button);
+        telemetry.addData("A Button: ",aPressed);
+        telemetry.addData("B Button: ",bPressed);
+        telemetry.addData("X Button: ",xPressed);
+        telemetry.addData("Y Button: ", yPressed);
         telemetry.addData("2nd Left Trigger",LX);
         telemetry.addData("2nd Right Trigger",RX);
         telemetry.addData("home",gamepad2.guide);

@@ -53,6 +53,7 @@ public class HardwareOmniRobot
     public DcMotor dumper = null;
     public Servo claw1 = null;
     public Servo claw2 = null;
+    public Servo jewelGrab = null;
     private final double MIN_MOTOR_OUTPUT_VALUE = -1.0;
     private final double MAX_MOTOR_OUTPUT_VALUE = 1.0;
 
@@ -90,6 +91,7 @@ public class HardwareOmniRobot
         wheelie = hwMap.dcMotor.get("wheelie");
         grabber = hwMap.dcMotor.get("grabber");
         dumper = hwMap.dcMotor.get("dumper");
+        jewelGrab = hwMap.servo.get("JewelGrab");
         claw1 = hwMap.servo.get("claw_1");
         claw2 = hwMap.servo.get("claw_2");
         jknock = hwMap.servo.get("jknock");
@@ -132,6 +134,7 @@ public class HardwareOmniRobot
         jknock.setPosition(0.8);
         claw1.setPosition(0.0);
         claw2.setPosition(1.0);
+        jewelGrab.setPosition(0.98);
         dumper.setPower(0);
 
         if(rungyro == true) {
@@ -173,10 +176,10 @@ public class HardwareOmniRobot
     public void onmiDrive (double sideways, double forward, double rotation)
     {
         try {
-            leftMotor1.setPower(limit(((forward - sideways)/2) * 1 + (-.25 * rotation)));
-            leftMotor2.setPower(limit(((forward + sideways)/2) * 1 + (-.25 * rotation)));
-            rightMotor1.setPower(limit(((-forward - sideways)/2) * 1 + (-.25 * rotation)));
-            rightMotor2.setPower(limit(((-forward + sideways)/2) * 1 + (-.25 * rotation)));
+            leftMotor1.setPower(limit(((forward - sideways)/2) * 1 + (-.2 * rotation)));
+            leftMotor2.setPower(limit(((forward + sideways)/2) * 1 + (-.2 * rotation)));
+            rightMotor1.setPower(limit(((-forward - sideways)/2) * 1 + (-.2 * rotation)));
+            rightMotor2.setPower(limit(((-forward + sideways)/2) * 1 + (-.2 * rotation)));
         } catch (Exception e) {
             RobotLog.ee(MESSAGETAG, e.getStackTrace().toString());
         }
