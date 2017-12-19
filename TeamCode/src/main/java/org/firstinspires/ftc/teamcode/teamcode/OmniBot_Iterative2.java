@@ -267,7 +267,7 @@ public class OmniBot_Iterative2 extends OpMode{
             robot.jewelGrab.setPosition(0.98);
         }
 
-        //dumper controlls
+        //dumper controls
         if (right_bumper == true) {
             robot.dumper.setTargetPosition(480);
         }

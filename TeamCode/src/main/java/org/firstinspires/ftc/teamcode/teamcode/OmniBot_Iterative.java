@@ -239,7 +239,7 @@ public class OmniBot_Iterative extends OpMode{
         else {
             robot.grabber.setTargetPosition(0);
         }
-        //wheelie controlls
+        //wheelie controls
         if(left_bump1 == true) {
             robot.wheelie.setPower(-1.0);
         }
@@ -258,7 +258,7 @@ public class OmniBot_Iterative extends OpMode{
             robot.jewelGrab.setPosition(0.98);
         }
 
-        //dumper controlls
+        //dumper controls
         if (right_bumper == true) {
             robot.dumper.setTargetPosition(480);
         }

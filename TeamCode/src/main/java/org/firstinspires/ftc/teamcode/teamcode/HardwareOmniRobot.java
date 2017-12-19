@@ -55,6 +55,7 @@ public class HardwareOmniRobot
     public Servo claw1 = null;
     public Servo claw2 = null;
     public Servo jewelGrab = null;
+    public Servo flexServo = null;
     private final double MIN_MOTOR_OUTPUT_VALUE = -1.0;
     private final double MAX_MOTOR_OUTPUT_VALUE = 1.0;
 
@@ -96,6 +97,7 @@ public class HardwareOmniRobot
         claw1 = hwMap.servo.get("claw_1");
         claw2 = hwMap.servo.get("claw_2");
         jknock = hwMap.servo.get("jknock");
+        flexServo = hwMap.servo.get("flex");
         jkcolor = hwMap.get(ColorSensor.class, "color_sense");
         jkcolor2 = hwMap.get(ColorSensor.class, "color");
         RobotLog.ii("5040MSGHW","Everything but ultras gotten");
@@ -139,6 +141,7 @@ public class HardwareOmniRobot
         claw2.setPosition(1.0);
         jewelGrab.setPosition(0.98);
         dumper.setPower(0);
+        flexServo.setPosition(0.196);        //out to 90 -- 0.82
 
         if(rungyro == true) {
             gyro = hwMap.get(ModernRoboticsI2cGyro.class, "gyro");
