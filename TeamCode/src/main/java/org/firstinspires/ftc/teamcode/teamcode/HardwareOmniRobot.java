@@ -43,6 +43,7 @@ public class HardwareOmniRobot
 
     /* Public OpMode members. */
     public AnalogInput flex = null;
+    public AnalogInput ultraSonic = null;
     public DcMotor leftMotor1 = null;
     public DcMotor leftMotor2 = null;
     public DcMotor rightMotor1 = null;
@@ -109,6 +110,8 @@ public class HardwareOmniRobot
         ultra_right.setI2cAddress(I2cAddr.create8bit(0x14));
         ultra_back.setI2cAddress(I2cAddr.create8bit(0x16));
         RobotLog.ii("5040MSGHW","Everything set up");
+
+        ultraSonic = hwMap.analogInput.get("ultra_sonic");
 
         flex = hwMap.analogInput.get("flx");
 
