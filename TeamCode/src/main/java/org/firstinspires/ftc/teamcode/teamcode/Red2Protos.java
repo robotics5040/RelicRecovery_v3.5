@@ -148,7 +148,7 @@ public class Red2Protos extends AutoPull {
         boolean dis = false;
 
         DriveFor(robot,0.5,0.0,0.0,0.0);
-        while (dis == false && runtime2.seconds() < 20 && opModeIsActive()) {
+        while (dis == false && runtime2.seconds() < 24 && opModeIsActive()) {
             double distanceBack = robot.ultra_back.getDistance(DistanceUnit.CM);
 
             telemetry.addData("Back", distanceBack);
@@ -158,9 +158,9 @@ public class Red2Protos extends AutoPull {
                 onmiDrive(robot,0.0, 0.0, 0.0);
                 dis = true;
             } else if (distanceBack > 23) {
-                onmiDrive(robot,0.0, 0.3, 0.0);
+                onmiDrive(robot,0.0, -0.45, 0.0);
             } else {
-                onmiDrive(robot,0.0, -0.3, 0.0);
+                onmiDrive(robot,0.0, 0.45, 0.0);
             }
         }
 
@@ -172,7 +172,9 @@ public class Red2Protos extends AutoPull {
         int count = 0;
         while (dis2 == false && runtime2.seconds() < 26 && opModeIsActive() && dis == true) {
             double distanceLeft = robot.ultra_left.getDistance(DistanceUnit.CM);
+            //double distanceRight = robot.ultra_right.getDistance(DistanceUnit.CM);
             telemetry.addData("Left", distanceLeft);
+            //telemetry.addData("Right", distanceRight);
             telemetry.update();
 
             if (distanceLeft > 3) { //eliminates the 1.242445621452 crap
@@ -190,27 +192,37 @@ public class Red2Protos extends AutoPull {
                     }
 
                 } else if (distanceLeft < target) {
-                    onmiDrive(robot,0.3,0.0,0.0);
+                    onmiDrive(robot,-0.45,0.0,0.0);
                     //NavX(0.0, -0.3);
                 } else {
-                    onmiDrive(robot,-0.3,0.0,0.0);
+                    onmiDrive(robot,0.45,0.0,0.0);
                     //NavX(0.0, 0.3);
                 }
                 if(runtime.seconds() > 1.0 && choosen != 1) {
-                    runtime.reset();
+                    DriveFor(robot,0.3,0,0,0);
                     RotateTo0(robot,0);
+                    DriveFor(robot,0.3,0,0,0);
+                    runtime.reset();
                 }
             }
             else {
                 onmiDrive(robot,0,0,0);
             }
+            /*if(distanceRight > 30 && distanceRight < 60) {
+                DriveFor(robot,0.5,-0.4,0,0);
+                RotateTo0(robot,0);
+                DriveFor(robot,0.5,0,-0.4,0);
+                DriveFor(robot,0.3,0,0,0);
+                runtime.reset();
+            }*/
         }
 
         telemetry.addLine("Lineup 2 Complete");
         telemetry.update();
 
         robot.dumper.setPower(0.4);
-        while (robot.dumper.getCurrentPosition() <= 470 && opModeIsActive() && runtime2.seconds() < 26) {
+        onmiDrive(robot,0.0, 0.0, 0.0);
+        while (robot.dumper.getCurrentPosition() <= 470 && opModeIsActive() && runtime2.seconds() < 28) {
             robot.dumper.setTargetPosition(480);
         }
         while (robot.dumper.getCurrentPosition() >= 5 && opModeIsActive()) {
@@ -219,10 +231,10 @@ public class Red2Protos extends AutoPull {
 
 
         DriveFor(robot,0.5,0.0,0.0,0.0);
-        DriveFor(robot,0.5, 0.4, 0.0, 0.0);
+        DriveFor(robot,0.5, 0.45, 0.0, 0.0);
         if(runtime2.seconds() < 29) {
             DriveFor(robot, 1.0, -0.8, 0.0, 0.0);
-            DriveFor(robot, 0.5, 0.4, 0.0, 0.0);
+            DriveFor(robot, 0.5, 0.45, 0.0, 0.0);
         }
         robot.claw1.setPosition(0.3);
         robot.claw2.setPosition(0.7);
@@ -232,7 +244,7 @@ public class Red2Protos extends AutoPull {
 
     public void RotateTo0(HardwareOmniRobot robot,int degrees) {
         float heading = robot.gyro.getHeading();
-        double speed = 0.38;
+        double speed = -0.4;
         while(heading != degrees  && opModeIsActive()) {
             telemetry.addData("HEADING",heading);
             telemetry.update();

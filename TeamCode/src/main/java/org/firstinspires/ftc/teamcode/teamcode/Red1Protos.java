@@ -95,8 +95,7 @@ public class Red1Protos extends AutoPull {
             idle();
         }
 
-        telemetry.addData("Status", "Ready to run");
-        telemetry.update();
+        runtime2.reset();
 
         RobotLog.ii("5040MSG","Pre Start");
         //waitForStart();
@@ -115,7 +114,7 @@ public class Red1Protos extends AutoPull {
                 target = 114;
                 break;
             case (3):
-                target = 134;
+                target = 133;
                 break;
             default:
                 target = 99;
@@ -136,7 +135,9 @@ public class Red1Protos extends AutoPull {
         telemetry.update();
 
         DriveFor(robot,0.9,0.0,0.0,1.0);
+        DriveFor(robot,0.3,0,0,0);
         RotateTo(robot,270);
+        DriveFor(robot,0.3,0,0,0);
 
 
         robot.claw1.setPosition(0.3);
@@ -144,8 +145,9 @@ public class Red1Protos extends AutoPull {
 
         boolean dis = false;
 
+        int count1 = 0;
         DriveFor(robot,0.5,0.0,0.0,0.0);
-        while (dis == false && runtime2.seconds() < 20 && opModeIsActive()) {
+        while (dis == false && runtime2.seconds() < 24 && opModeIsActive()) {
             double distanceBack = robot.ultra_back.getDistance(DistanceUnit.CM);
 
             telemetry.addData("Back", distanceBack);
@@ -153,11 +155,13 @@ public class Red1Protos extends AutoPull {
 
             if (distanceBack == 22) {
                 onmiDrive(robot,0.0, 0.0, 0.0);
-                dis = true;
+                if(count1 >= 1)
+                    dis = true;
+                count1++;
             } else if (distanceBack > 22) {
-                onmiDrive(robot,0.0, 0.3, 0.0);
+                onmiDrive(robot,0.0, -0.45, 0.0);
             } else {
-                onmiDrive(robot,0.0, -0.3, 0.0);
+                onmiDrive(robot,0.0, 0.45, 0.0);
             }
         }
         RobotLog.ii("5040MSG","Post BackPos");
@@ -175,23 +179,27 @@ public class Red1Protos extends AutoPull {
             if (distanceLeft > 2) { //eliminates the 1.242445621452 crap
                 if (distanceLeft == target || distanceLeft ==  65) {
                     onmiDrive(robot,0.0, 0.0, 0.0);
-                    if(count >= 2) {
+                    if(count >= 1) {
                         dis2 = true;
                     }
                     count ++;
-                    RotateTo(robot,90);
+                    DriveFor(robot,0.3,0,0,0);
+                    RotateTo(robot,270);
+                    DriveFor(robot,0.3,0,0,0);
                     runtime.reset();
 
                 } else if (distanceLeft < target) {
-                    onmiDrive(robot,0.3,0.0,0.0);
+                    onmiDrive(robot,-0.45,0.0,0.0);
                     //NavX(0.0, -0.3);
                 } else {
-                    onmiDrive(robot,-0.3,0.0,0.0);
+                    onmiDrive(robot,0.45,0.0,0.0);
                     //NavX(0.0, 0.3);
                 }
                 if(runtime.seconds() > 1.0 && choosen != 1) {
+                    DriveFor(robot,0.3,0,0,0);
+                    RotateTo(robot,270);
+                    DriveFor(robot,0.3,0,0,0);
                     runtime.reset();
-                    RotateTo(robot,90);
                 }
             }
             else {
@@ -203,7 +211,8 @@ public class Red1Protos extends AutoPull {
         telemetry.update();
 
         robot.dumper.setPower(0.4);
-        while (robot.dumper.getCurrentPosition() <= 475 && opModeIsActive() && runtime2.seconds() < 28) {
+        onmiDrive(robot,0.0, 0.0, 0.0);
+        while (robot.dumper.getCurrentPosition() <= 470 && opModeIsActive() && runtime2.seconds() < 28) {
             robot.dumper.setTargetPosition(480);
         }
         while (robot.dumper.getCurrentPosition() >= 5 && opModeIsActive()) {
@@ -212,9 +221,11 @@ public class Red1Protos extends AutoPull {
 
 
         DriveFor(robot,0.5,0.0,0.0,0.0);
-        DriveFor(robot,0.5, 0.4, 0.0, 0.0);
-        DriveFor(robot,1.0, -0.8, 0.0, 0.0);
-        DriveFor(robot,0.5, 0.4, 0.0, 0.0);
+        DriveFor(robot,0.5, 0.45, 0.0, 0.0);
+        if(runtime2.seconds() < 29) {
+            DriveFor(robot, 1.0, -0.8, 0.0, 0.0);
+            DriveFor(robot, 0.5, 0.45, 0.0, 0.0);
+        }
         robot.claw1.setPosition(0.3);
         robot.claw2.setPosition(0.7);
         DriveFor(robot,1.0, 0.0, 0.0, 0.0);

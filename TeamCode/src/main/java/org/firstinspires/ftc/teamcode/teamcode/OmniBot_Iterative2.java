@@ -261,7 +261,7 @@ public class OmniBot_Iterative2 extends OpMode{
 
         //Jewel Remover Controls
         if(right_trigger1 > 0.2) {
-            robot.jewelGrab.setPosition(0.25);
+            robot.jewelGrab.setPosition(0.3);
         }
         else {
             robot.jewelGrab.setPosition(0.98);

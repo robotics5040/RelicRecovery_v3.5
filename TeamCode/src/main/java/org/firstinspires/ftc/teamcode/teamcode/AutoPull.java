@@ -47,7 +47,7 @@ public class AutoPull extends LinearOpMode {
 
     //drives robot for certain time amount. Can also be used for waiting time
     public void DriveFor(HardwareOmniRobot robot, double time, double forward, double side, double rotate) {
-        onmiDrive(robot,side, -forward, rotate); //starts moving in wanted direction
+        onmiDrive(robot,-side, forward, -rotate); //starts moving in wanted direction
         runtime.reset(); //resets time
 
         while (opModeIsActive() && runtime.seconds() < time) {    //runs for amount of time wanted
@@ -59,16 +59,16 @@ public class AutoPull extends LinearOpMode {
     public void TurnLeft(HardwareOmniRobot robot){
         telemetry.addLine("Left");
         telemetry.update();
-        DriveFor(robot,0.3, 0.0, 0.0, -0.5);
+        DriveFor(robot,0.5, 0.0, 0.0, -0.5);
         robot.jknock.setPosition(0.7);
-        DriveFor(robot,0.3, 0.0, 0.0, 0.5);
+        DriveFor(robot,0.5, 0.0, 0.0, 0.5);
     }
     public void TurnRight(HardwareOmniRobot robot){
         telemetry.addLine("Right");
         telemetry.update();
-        DriveFor(robot,0.3, 0.0, 0.0, 0.5);
+        DriveFor(robot,0.45, 0.0, 0.0, 0.5);
         robot.jknock.setPosition(0.7);
-        DriveFor(robot,0.3, 0.0, 0.0, -0.5);
+        DriveFor(robot,0.45, 0.0, 0.0, -0.5);
     }
 
     //jewel code
@@ -124,15 +124,15 @@ public class AutoPull extends LinearOpMode {
     //rotates to degree. goes from 0 to 259 so no negative inputs
     public void RotateTo(HardwareOmniRobot robot,int degrees) {
         float heading = robot.gyro.getHeading();
-        double speed = 0.38;
+        double speed = 0.4;
         while(heading != degrees  && opModeIsActive()) {
             telemetry.addData("HEADING",heading);
             telemetry.update();
             heading = robot.gyro.getHeading();
             if (degrees < heading) {
-                onmiDrive(robot, 0.0, 0.0, speed);
-            } else if (degrees > heading) {
                 onmiDrive(robot, 0.0, 0.0, -speed);
+            } else if (degrees > heading) {
+                onmiDrive(robot, 0.0, 0.0, speed);
             }
             else {
                 onmiDrive(robot,0.0,0.0,0.0);
