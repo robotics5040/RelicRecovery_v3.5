@@ -299,13 +299,13 @@ public class OmniBot_Iterative2 extends OpMode{
         telemetry.addData("Right Bumper: ", right_bumper );
         telemetry.addData("Left Trigger: ", left_trigger);
         telemetry.addData("Right Trigger: ", right_trigger1);
-        telemetry.addData("A Button: ",a_button);
-        telemetry.addData("B Button: ",b_button);
-        telemetry.addData("X Button: ",x_button);
+        telemetry.addData("A Button: ", a_button);
+        telemetry.addData("B Button: ", b_button);
+        telemetry.addData("X Button: ", x_button);
         telemetry.addData("Y Button: ", y_button);
-        telemetry.addData("A Button: ",aPressed);
-        telemetry.addData("B Button: ",bPressed);
-        telemetry.addData("X Button: ",xPressed);
+        telemetry.addData("A Button: ", aPressed);
+        telemetry.addData("B Button: ", bPressed);
+        telemetry.addData("X Button: ", xPressed);
         telemetry.addData("Y Button: ", yPressed);
         telemetry.addData("2nd Left Trigger",LX);
         telemetry.addData("2nd Right Trigger",RX);
@@ -315,7 +315,7 @@ public class OmniBot_Iterative2 extends OpMode{
         telemetry.addData("Ultra left", robot.ultra_left.getDistance(DistanceUnit.CM));
         telemetry.addData("Ultra right", robot.ultra_right.getDistance(DistanceUnit.CM));
         */
-        telemetry.addData("Ultra Sonic Voltage ", ((robot.ultraSonic.getVoltage() / 5) * 512));
+        telemetry.addData("Ultra Sonic Voltage ", ((robot.ultraSonic.getVoltage() / 5) * 512) + 2.5);
         telemetry.addLine("What is my name?: Spitz");
         telemetry.addData("rotate",rotate);
 
