@@ -60,7 +60,7 @@ public class OmniBot_Iterative2 extends OpMode{
     private double position = 0.0;
     public int  pressed = 0,up=10;
     double wrist_num = 0;
-    boolean there=true,run =false,done=false,aPressed=false,bPressed=false,xPressed=false,yPressed=true,closed = true;
+    boolean there=true,run =false,done=false,aPressed=true,bPressed=false,xPressed=false,yPressed=false,closed = true;
     ElapsedTime runtime = new ElapsedTime();
     /* Declare OpMode members. */
     private HardwareOmniRobot robot; // use the class created to define a Pushbot's hardware
