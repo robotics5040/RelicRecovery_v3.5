@@ -139,7 +139,7 @@ public class HardwareOmniRobot
         jknock.setPosition(0.8);
         claw1.setPosition(0.0);
         claw2.setPosition(1.0);
-        jewelGrab.setPosition(0.98);
+        jewelGrab.setPosition(0.19);
         dumper.setPower(0);
         flexServo.setPosition(0.196);        //out to 90 -- 0.82
 
