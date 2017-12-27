@@ -101,7 +101,7 @@ public class OmnibotAutoBlue extends AutoPull {
         //move distance from column wall     19 with columns?
          boolean dis = false;
         while(dis == false) {
-            double distanceBack = robot.ultra_back.getDistance(DistanceUnit.CM);
+            double distanceBack =0;// robot.ultra_back.getDistance(DistanceUnit.CM);
 
             telemetry.addData("Back", distanceBack);
             telemetry.update();
@@ -117,7 +117,7 @@ public class OmnibotAutoBlue extends AutoPull {
 
         //moving to correct column
         while(inPlace == false) {
-            double distanceLeft = robot.ultra_right.getDistance(DistanceUnit.CM);
+            double distanceLeft =0;// robot.ultra_right.getDistance(DistanceUnit.CM);
 
             telemetry.addData("Left", distanceLeft);
             telemetry.update();

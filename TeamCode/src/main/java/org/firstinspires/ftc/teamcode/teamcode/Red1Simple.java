@@ -70,7 +70,7 @@ public class Red1Simple extends AutoPull {
 
         boolean dis = false;
         while(dis == false && runtime.seconds() < 26 && opModeIsActive()) {
-            double distanceLeft = robot.ultra_left.getDistance(DistanceUnit.CM);
+            double distanceLeft = 0;//robot.ultra_left.getDistance(DistanceUnit.CM);
 
             telemetry.addData("Left", distanceLeft);
             telemetry.update();

@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.teamcode;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
 import com.qualcomm.robotcore.hardware.AnalogInput;
@@ -35,15 +36,18 @@ public class HardwareOmniRobot
     ColorSensor jkcolor, jkcolor2;
 
     ModernRoboticsI2cGyro gyro;
+    BNO055IMU imu;
 
-    ModernRoboticsI2cRangeSensor ultra_right, ultra_left, ultra_back;
+    //ModernRoboticsI2cRangeSensor ultra_right, ultra_left,ultra_back;
 
     public final int GRABBER_AUTOPOS = 1395;
     public final double JKUP = 0.8;
 
     /* Public OpMode members. */
     public AnalogInput flex = null;
-    public AnalogInput ultraSonic = null;
+    public AnalogInput ultra_left = null;
+    public AnalogInput ultra_back = null;
+    public AnalogInput ultra_right = null;
     public DcMotor leftMotor1 = null;
     public DcMotor leftMotor2 = null;
     public DcMotor rightMotor1 = null;
@@ -104,16 +108,18 @@ public class HardwareOmniRobot
 
         jkcolor2.setI2cAddress(I2cAddr.create8bit(0x28));
 
-        ultra_back = hwMap.get(ModernRoboticsI2cRangeSensor.class, "ultra_back");
-        ultra_left = hwMap.get(ModernRoboticsI2cRangeSensor.class, "ultra_left");
-        ultra_right = hwMap.get(ModernRoboticsI2cRangeSensor.class, "ultra_right");
+        //ultra_back = hwMap.get(ModernRoboticsI2cRangeSensor.class, "ultra_back");
+        //ultra_left = hwMap.get(ModernRoboticsI2cRangeSensor.class, "ultra_left");
+        //ultra_right = hwMap.get(ModernRoboticsI2cRangeSensor.class, "ultra_right");
 
-        ultra_left.setI2cAddress(I2cAddr.create8bit(0x12));
-        ultra_right.setI2cAddress(I2cAddr.create8bit(0x14));
-        ultra_back.setI2cAddress(I2cAddr.create8bit(0x16));
+        //ultra_left.setI2cAddress(I2cAddr.create8bit(0x12));
+        //ultra_right.setI2cAddress(I2cAddr.create8bit(0x14));
+        //ultra_back.setI2cAddress(I2cAddr.create8bit(0x16));
         RobotLog.ii("5040MSGHW","Everything set up");
 
-        ultraSonic = hwMap.analogInput.get("ultra_sonic");
+        ultra_left = hwMap.analogInput.get("ultra_left");
+        ultra_back = hwMap.analogInput.get("ultra_back");
+        ultra_right = hwMap.analogInput.get("ultra_right");
 
         flex = hwMap.analogInput.get("flx");
 
@@ -144,8 +150,16 @@ public class HardwareOmniRobot
         flexServo.setPosition(0.196);        //out to 90 -- 0.82
 
         if(rungyro == true) {
-            gyro = hwMap.get(ModernRoboticsI2cGyro.class, "gyro");
-            gyro.calibrate();
+            BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+            parameters.loggingEnabled = true;
+            parameters.loggingTag     = "IMU";
+            //parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+            imu = hwMap.get(BNO055IMU.class, "imu");
+            imu.initialize(parameters);
+
+
+            //gyro = hwMap.get(ModernRoboticsI2cGyro.class, "gyro");
+            //gyro.calibrate();
         }
 
     }

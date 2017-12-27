@@ -9,6 +9,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
@@ -121,10 +124,10 @@ public class AutoPull extends LinearOpMode {
         if(robot.jknock.getPosition() != robot.JKUP) {robot.jknock.setPosition(robot.JKUP);}
     }
 
-    //rotates to degree. goes from 0 to 259 so no negative inputs
+    //rotates to degree. goes from -180 to 180 starts at 0
     public void RotateTo(HardwareOmniRobot robot,int degrees) {
-        float heading = robot.gyro.getHeading();
-        double speed = 0.4;
+        float heading=robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
+        double speed = 0.5;
         while(heading != degrees  && opModeIsActive()) {
             telemetry.addData("HEADING",heading);
             telemetry.update();
@@ -133,6 +136,7 @@ public class AutoPull extends LinearOpMode {
                 onmiDrive(robot, 0.0, 0.0, -speed);
             } else if (degrees > heading) {
                 onmiDrive(robot, 0.0, 0.0, speed);
+                speed -= 0.01;
             }
             else {
                 onmiDrive(robot,0.0,0.0,0.0);

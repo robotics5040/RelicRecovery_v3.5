@@ -83,7 +83,7 @@ public class Blue1Simple extends AutoPull {
         //goes distance from wall to be in park zone
         boolean dis = false;
         while(opModeIsActive() && dis == false && runtime.seconds() < 26) {
-            double distanceLeft = robot.ultra_left.getDistance(DistanceUnit.CM);
+            double distanceLeft = 0;//robot.ultra_left.getDistance(DistanceUnit.CM);
 
             telemetry.addData("Left", distanceLeft);
             telemetry.update();

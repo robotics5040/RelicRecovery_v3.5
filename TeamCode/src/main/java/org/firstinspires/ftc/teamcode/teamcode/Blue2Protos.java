@@ -36,6 +36,9 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
@@ -80,25 +83,15 @@ public class Blue2Protos extends AutoPull {
         parameters.cameraDirection = VuforiaLocalizer.CameraDirection.FRONT;
         VuforiaLocalizer vuforia = ClassFactory.createVuforiaLocalizer(parameters);
 
-
-
-        while (robot.gyro.isCalibrating()){
-            telemetry.addLine("Calibrating gyro");
-            telemetry.update();
-        }
         while (!(isStarted() || isStopRequested())) {
+            float heading = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
 
             // Display the light level while we are waiting to start
-            telemetry.addData("HEADING",robot.gyro.getHeading());
+            telemetry.addData("HEADING",heading);
             telemetry.update();
             idle();
         }
 
-        telemetry.addData("Status", "Ready to run");
-        telemetry.update();
-
-
-        //waitForStart();
         runtime.reset();
         runtime2.reset();
 
@@ -127,15 +120,15 @@ public class Blue2Protos extends AutoPull {
         DriveFor(robot,0.3,0.0,0.0,0.0);
         if(robot.jknock.getPosition() != robot.JKUP) {robot.jknock.setPosition(robot.JKUP);}
         robot.wheelie.setPower(1);
-        DriveFor(robot,0.9,1.0,0.0,0.0);
+        DriveFor(robot,1.0,1.0,0.0,0.0);
         robot.wheelie.setPower(0);
         DriveFor(robot,0.3,0.0,0.0,0.0);
 
         telemetry.update();
 
-        DriveFor(robot,0.9,0.0,0.0,1.0);
+        //DriveFor(robot,1.0,0.0,0.0,1.0);
         DriveFor(robot,0.3,0,0,0);
-        RotateTo(robot,180);
+        RotateTo180(robot,180);
 
 
         robot.claw1.setPosition(0.5);
@@ -145,7 +138,7 @@ public class Blue2Protos extends AutoPull {
 
         DriveFor(robot,0.5,0.0,0.0,0.0);
         while (dis == false && runtime2.seconds() < 24 && opModeIsActive()) {
-            double distanceBack = robot.ultra_back.getDistance(DistanceUnit.CM);
+            double distanceBack = ((robot.ultra_back.getVoltage() / 5) * 512) + 2.5;//robot.ultra_back.getDistance(DistanceUnit.CM);
 
             telemetry.addData("Back", distanceBack);
             telemetry.update();
@@ -167,7 +160,7 @@ public class Blue2Protos extends AutoPull {
         int count = 0;
         runtime.reset();
         while (dis2 == false && runtime2.seconds() < 26 && opModeIsActive() && dis == true) {
-            double distanceRight = robot.ultra_right.getDistance(DistanceUnit.CM);
+            double distanceRight = ((robot.ultra_right.getVoltage() / 5) * 512) + 2.5;// robot.ultra_right.getDistance(DistanceUnit.CM);
             telemetry.addData("Right", distanceRight);
             telemetry.update();
 
@@ -180,7 +173,7 @@ public class Blue2Protos extends AutoPull {
                     else {
                         count ++;
                         DriveFor(robot,0.3,0,0,0);
-                        RotateTo(robot,180);
+                        RotateTo180(robot,180);
                         DriveFor(robot,0.3,0,0,0);
                         runtime.reset();
                     }
@@ -194,7 +187,7 @@ public class Blue2Protos extends AutoPull {
                 }
                 if(runtime.seconds() > 1.0 && choosen != 1) {
                     DriveFor(robot,0.3,0,0,0);
-                    RotateTo(robot,180);
+                    RotateTo180(robot,180);
                     DriveFor(robot,0.3,0,0,0);
                     runtime.reset();
                 }
@@ -218,7 +211,7 @@ public class Blue2Protos extends AutoPull {
 
 
         DriveFor(robot,0.5,0.0,0.0,0.0);
-        DriveFor(robot,0.5, 0.45, 0.0, 0.0);
+        DriveFor(robot,0.5,0.45,0.0,0.0);
         if(runtime2.seconds() < 29) {
             DriveFor(robot, 1.0, -0.8, 0.0, 0.0);
             DriveFor(robot, 0.5, 0.45, 0.0, 0.0);
@@ -227,5 +220,36 @@ public class Blue2Protos extends AutoPull {
         robot.claw2.setPosition(0.7);
         DriveFor(robot,1.0, 0.0, 0.0, 0.0);
 
+    }
+    public void RotateTo180(HardwareOmniRobot robot,int degrees) {
+        float heading=robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
+        double speed = 0.5;
+        while(heading != degrees  && opModeIsActive()) {
+            telemetry.addData("speed",speed);
+            telemetry.addData("HEADING",heading);
+            telemetry.update();
+            heading=robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
+
+            if(heading < -150) {
+                onmiDrive(robot, 0.0, 0.0, -speed);
+                if(speed > 0.35) {
+                    speed -= 0.01;
+                }
+                telemetry.addLine("1");
+            }
+            else if (degrees+2 < heading) {
+                onmiDrive(robot, 0.0, 0.0, -speed);
+                if(speed > 0.3) {
+                    speed -= 0.01;
+                }
+                telemetry.addLine("2");
+            } else if (degrees-2 > heading) {
+                onmiDrive(robot, 0.0, 0.0, speed);
+                telemetry.addLine("3");
+            }
+            else {
+                onmiDrive(robot,0.0,0.0,0.0);
+            }
+        }
     }
 }

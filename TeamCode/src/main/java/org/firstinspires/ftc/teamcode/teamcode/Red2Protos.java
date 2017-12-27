@@ -149,7 +149,7 @@ public class Red2Protos extends AutoPull {
 
         DriveFor(robot,0.5,0.0,0.0,0.0);
         while (dis == false && runtime2.seconds() < 24 && opModeIsActive()) {
-            double distanceBack = robot.ultra_back.getDistance(DistanceUnit.CM);
+            double distanceBack =0;// robot.ultra_back.getDistance(DistanceUnit.CM);
 
             telemetry.addData("Back", distanceBack);
             telemetry.update();
@@ -171,7 +171,7 @@ public class Red2Protos extends AutoPull {
         runtime.reset();
         int count = 0;
         while (dis2 == false && runtime2.seconds() < 26 && opModeIsActive() && dis == true) {
-            double distanceLeft = robot.ultra_left.getDistance(DistanceUnit.CM);
+            double distanceLeft =0;// robot.ultra_left.getDistance(DistanceUnit.CM);
             //double distanceRight = robot.ultra_right.getDistance(DistanceUnit.CM);
             telemetry.addData("Left", distanceLeft);
             //telemetry.addData("Right", distanceRight);

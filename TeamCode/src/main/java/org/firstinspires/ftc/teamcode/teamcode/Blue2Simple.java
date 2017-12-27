@@ -72,7 +72,7 @@ public class Blue2Simple extends AutoPull {
 
         boolean dis = false;
         while(dis == false && runtime.seconds() < 26 && opModeIsActive()) {
-            double distanceBack = robot.ultra_back.getDistance(DistanceUnit.CM);
+            double distanceBack = 0;//robot.ultra_back.getDistance(DistanceUnit.CM);
 
             telemetry.addData("Back", distanceBack);
             telemetry.update();
