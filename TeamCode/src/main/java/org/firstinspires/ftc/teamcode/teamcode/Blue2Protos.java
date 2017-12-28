@@ -223,6 +223,8 @@ public class Blue2Protos extends AutoPull {
         while(on == false  && opModeIsActive()) {
             telemetry.addData("speed",speed);
             telemetry.addData("HEADING",heading);
+            telemetry.addData("Status", robot.imu.getSystemError());
+            telemetry.addData("Status", robot.imu.getSystemStatus());
             telemetry.update();
             heading=robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
 
