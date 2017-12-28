@@ -28,6 +28,11 @@ public class AutoPull extends LinearOpMode {
     private final double MIN_MOTOR_OUTPUT_VALUE = -1.0;
     private final double MAX_MOTOR_OUTPUT_VALUE = 1.0;
 
+    private int columnNum = 0;
+    private double flexCurrent;
+    private double flexPrevious = 0;
+    private final double TOLERANCE = 0.30;
+
     @Override public void runOpMode() throws InterruptedException {}
 
     //needed for driving
@@ -193,6 +198,18 @@ public class AutoPull extends LinearOpMode {
         }
 
         return choosen;
+    }
+
+    public int getColumnNum(){
+
+
+        flexCurrent = flex.getVoltage();
+
+        if (flexPrevious - TOLERANCE > flexCurrent) {
+            columnNum++;
+        }
+        flexPrevious = flexCurrent;
+        return columnNum;
     }
 }
 
