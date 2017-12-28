@@ -120,8 +120,10 @@ public class Blue2Protos extends AutoPull {
         DriveFor(robot,0.3,0.0,0.0,0.0);
         if(robot.jknock.getPosition() != robot.JKUP) {robot.jknock.setPosition(robot.JKUP);}
         robot.wheelie.setPower(1);
-        DriveFor(robot,1.0,1.0,0.0,0.0);
+        DriveFor(robot,0.65,1.0,0.0,0.0);
         robot.wheelie.setPower(0);
+        DriveFor(robot,0.5,0.45,0.0,0.0);
+        DriveFor(robot,0.7,-0.45,0.0,0.0);
         DriveFor(robot,0.3,0.0,0.0,0.0);
 
         telemetry.update();
@@ -143,13 +145,13 @@ public class Blue2Protos extends AutoPull {
             telemetry.addData("Back", distanceBack);
             telemetry.update();
 
-            if (distanceBack == 17) {
-                onmiDrive(robot,0.0, 0.0, 0.0);
-                dis = true;
-            } else if (distanceBack > 17) {
+            if (distanceBack < 15) {
+                onmiDrive(robot,0.0, 0.45, 0.0);
+            } else if (distanceBack > 19) {
                 onmiDrive(robot,0.0, -0.45, 0.0);
             } else {
-                onmiDrive(robot,0.0, 0.45, 0.0);
+                onmiDrive(robot,0.0, 0.0, 0.0);
+                dis = true;
             }
         }
 
@@ -164,39 +166,32 @@ public class Blue2Protos extends AutoPull {
             telemetry.addData("Right", distanceRight);
             telemetry.update();
 
-            if (distanceRight > 2) { //eliminates the 1.242445621452 crap
-                if (distanceRight == target) {
-                    onmiDrive(robot,0.0, 0.0, 0.0);
-                    if(count >= 1) {
-                        dis2 = true;
-                    }
-                    else {
-                        count ++;
-                        DriveFor(robot,0.3,0,0,0);
-                        RotateTo180(robot,180);
-                        DriveFor(robot,0.3,0,0,0);
-                        runtime.reset();
-                    }
-
-                } else if (distanceRight < target) {
-                    onmiDrive(robot,0.45,0.0,0.0);
-                    //NavX(0.0, -0.3);
-                } else {
-                    onmiDrive(robot, -0.45, 0.0, 0.0);
-                    //NavX(0.0, 0.3);
+            if (distanceRight > target+2) {
+                onmiDrive(robot, -0.45, 0.0, 0.0);
+            }
+            else if (distanceRight < target-2) {
+                onmiDrive(robot,0.45,0.0,0.0);
+            }
+            else {
+                onmiDrive(robot,0.0, 0.0, 0.0);
+                if(count >= 1) {
+                    dis2 = true;
                 }
-                if(runtime.seconds() > 1.0 && choosen != 1) {
+                else {
+                    count ++;
                     DriveFor(robot,0.3,0,0,0);
                     RotateTo180(robot,180);
                     DriveFor(robot,0.3,0,0,0);
                     runtime.reset();
                 }
             }
-            else {
-                onmiDrive(robot,0,0,0);
+            if(runtime.seconds() > 1.0 && choosen != 1) {
+                DriveFor(robot,0.3,0,0,0);
+                RotateTo180(robot,180);
+                DriveFor(robot,0.3,0,0,0);
+                runtime.reset();
             }
         }
-
         telemetry.addLine("Lineup 2 Complete");
         telemetry.update();
 
@@ -224,30 +219,34 @@ public class Blue2Protos extends AutoPull {
     public void RotateTo180(HardwareOmniRobot robot,int degrees) {
         float heading=robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
         double speed = 0.5;
-        while(heading != degrees  && opModeIsActive()) {
+        boolean go=false, on=false;
+        while(on == false  && opModeIsActive()) {
             telemetry.addData("speed",speed);
             telemetry.addData("HEADING",heading);
             telemetry.update();
             heading=robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
 
-            if(heading < -150) {
+
+            if(heading < -150 && heading > -178) {
                 onmiDrive(robot, 0.0, 0.0, -speed);
                 if(speed > 0.35) {
                     speed -= 0.01;
                 }
                 telemetry.addLine("1");
             }
-            else if (degrees+2 < heading) {
+            else if (-178 > heading) {
                 onmiDrive(robot, 0.0, 0.0, -speed);
-                if(speed > 0.3) {
+                if(speed > 0.35 && go == true) {
                     speed -= 0.01;
                 }
                 telemetry.addLine("2");
             } else if (degrees-2 > heading) {
+                go = true;
                 onmiDrive(robot, 0.0, 0.0, speed);
                 telemetry.addLine("3");
             }
             else {
+                on = true;
                 onmiDrive(robot,0.0,0.0,0.0);
             }
         }

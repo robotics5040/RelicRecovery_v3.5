@@ -153,6 +153,7 @@ public class HardwareOmniRobot
             BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
             parameters.loggingEnabled = true;
             parameters.loggingTag     = "IMU";
+            parameters.mode = BNO055IMU.SensorMode.GYRONLY;
             //parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
             imu = hwMap.get(BNO055IMU.class, "imu");
             imu.initialize(parameters);
