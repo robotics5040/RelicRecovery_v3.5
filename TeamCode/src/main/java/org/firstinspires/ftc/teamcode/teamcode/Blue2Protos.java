@@ -32,6 +32,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package org.firstinspires.ftc.teamcode.teamcode;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -69,6 +70,7 @@ public class Blue2Protos extends AutoPull {
     ElapsedTime runtime2 = new ElapsedTime();
 
     @Override public void runOpMode() throws InterruptedException {
+
         robot.init(hardwareMap, true);
 
         robot.grabber.setPower(0.75);
@@ -116,7 +118,7 @@ public class Blue2Protos extends AutoPull {
         telemetry.addData("VuMark", "%s visible", choosen);
         telemetry.update();
 
-        JewelKnock(robot,"blue");
+        JewelKnock(robot, "blue");
         DriveFor(robot,0.3,0.0,0.0,0.0);
         if(robot.jknock.getPosition() != robot.JKUP) {robot.jknock.setPosition(robot.JKUP);}
         robot.wheelie.setPower(1);
@@ -224,9 +226,12 @@ public class Blue2Protos extends AutoPull {
     public void RotateTo180(HardwareOmniRobot robot,int degrees) {
         float heading=robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
         double speed = 0.5;
+
+
         while(heading != degrees  && opModeIsActive()) {
             telemetry.addData("speed",speed);
             telemetry.addData("HEADING",heading);
+            telemtery.addData("Status", robot.imu.getSystemStatus());
             telemetry.update();
             heading=robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
 

@@ -216,6 +216,7 @@ public class SensorBNO055IMUCalibration extends LinearOpMode
                     return formatAngle(angles.angleUnit, angles.thirdAngle);
                     }
                 });
+        //telemetry.addLine().addData("Is this how it works?", AngleUnit.DEGREES.fromUnit(angles.angleUnit, angles.firstAngle));
     }
 
     //----------------------------------------------------------------------------------------------

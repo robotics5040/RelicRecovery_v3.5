@@ -93,15 +93,15 @@ public class SensorBNO055IMU extends LinearOpMode
 
         // Set up our telemetry dashboard
         composeTelemetry();
-
+        //imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         // Wait until we're told to go
         waitForStart();
-
         // Start the logging of measured acceleration
         imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
 
         // Loop and update the dashboard
         while (opModeIsActive()) {
+            telemetry.addData("Is this how it works?", imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle);
             telemetry.update();
         }
     }
