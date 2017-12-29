@@ -230,7 +230,7 @@ public class OmniBot_Iterative extends OpMode{
         }
 
         else if (left_bumper == true) {
-            robot.grabber.setTargetPosition(1600);
+            robot.grabber.setTargetPosition(1560);
 
         }
         else if(left_trigger > 0.2) {

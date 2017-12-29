@@ -67,16 +67,16 @@ public class AutoPull extends LinearOpMode {
     public void TurnLeft(HardwareOmniRobot robot){
         telemetry.addLine("Left");
         telemetry.update();
-        DriveFor(robot,0.5, 0.0, 0.0, -0.5);
+        DriveFor(robot,0.4, 0.0, 0.0, -0.5);
         robot.jknock.setPosition(0.7);
-        DriveFor(robot,0.5, 0.0, 0.0, 0.5);
+        DriveFor(robot,0.4, 0.0, 0.0, 0.5);
     }
     public void TurnRight(HardwareOmniRobot robot){
         telemetry.addLine("Right");
         telemetry.update();
-        DriveFor(robot,0.45, 0.0, 0.0, 0.5);
+        DriveFor(robot,0.4, 0.0, 0.0, 0.5);
         robot.jknock.setPosition(0.7);
-        DriveFor(robot,0.45, 0.0, 0.0, -0.5);
+        DriveFor(robot,0.4, 0.0, 0.0, -0.5);
     }
 
     //jewel code
@@ -129,19 +129,25 @@ public class AutoPull extends LinearOpMode {
         if(robot.jknock.getPosition() != robot.JKUP) {robot.jknock.setPosition(robot.JKUP);}
     }
 
-    //rotates to degree. goes from -180 to 180 starts at 0
-    public void RotateTo(HardwareOmniRobot robot,int degrees) {
-        float heading=robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
+    //rotates to degree. goes from 0 to 359
+    public void RotateTo(HardwareOmniRobot robot,int degrees,int gyro) {
+        int heading=robot.gyro.getHeading()-gyro;
         double speed = 0.5;
+        boolean go = false;
+
         while(heading != degrees  && opModeIsActive()) {
             telemetry.addData("HEADING",heading);
             telemetry.update();
-            heading = robot.gyro.getHeading();
+            heading = robot.gyro.getHeading()-gyro;
             if (degrees < heading) {
                 onmiDrive(robot, 0.0, 0.0, -speed);
-            } else if (degrees > heading) {
+                go = true;
+            }
+            else if (degrees > heading) {
                 onmiDrive(robot, 0.0, 0.0, speed);
-                speed -= 0.01;
+                if(speed > 0.35 && go == true) {
+                    speed -= 0.01;
+                }
             }
             else {
                 onmiDrive(robot,0.0,0.0,0.0);
@@ -223,11 +229,10 @@ public class AutoPull extends LinearOpMode {
 
         return choosen;
     }
-/*
-    public int getColumnNum(){
 
+    public int getColumnNum(HardwareOmniRobot robot){
 
-        flexCurrent = flex.getVoltage();
+        flexCurrent = robot.flex.getVoltage();
 
         if (flexPrevious - TOLERANCE > flexCurrent) {
             columnNum++;
@@ -235,6 +240,5 @@ public class AutoPull extends LinearOpMode {
         flexPrevious = flexCurrent;
         return columnNum;
     }
-*/
 }
 

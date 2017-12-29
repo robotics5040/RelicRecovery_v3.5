@@ -32,8 +32,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package org.firstinspires.ftc.teamcode.teamcode;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.ReadWriteFile;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -44,6 +46,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
+import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
+
+import java.io.File;
 
 /**
  * This file provides basic Telop driving for a Pushbot robot.
@@ -83,14 +88,17 @@ public class Blue2Protos extends AutoPull {
         parameters.cameraDirection = VuforiaLocalizer.CameraDirection.FRONT;
         VuforiaLocalizer vuforia = ClassFactory.createVuforiaLocalizer(parameters);
 
+        while (robot.gyro.isCalibrating()){
+            telemetry.addLine("Calibrating gyro");
+            telemetry.update();
+        }
         while (!(isStarted() || isStopRequested())) {
-            float heading = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
-
-            // Display the light level while we are waiting to start
-            telemetry.addData("HEADING",heading);
+            telemetry.addData("heading", robot.gyro.getHeading());
             telemetry.update();
             idle();
         }
+
+        int startG = robot.gyro.getHeading();
 
         runtime.reset();
         runtime2.reset();
@@ -100,16 +108,16 @@ public class Blue2Protos extends AutoPull {
 
         switch (choosen) {
             case (1):
-                target = 50;
+                target = 22;
                 break;
             case (2):
-                target = 66;
+                target = 29;
                 break;
             case (3):
-                target = 84;
+                target = 36;
                 break;
             default:
-                target = 50;
+                target = 29;
                 break;
         }
 
@@ -120,34 +128,36 @@ public class Blue2Protos extends AutoPull {
         DriveFor(robot,0.3,0.0,0.0,0.0);
         if(robot.jknock.getPosition() != robot.JKUP) {robot.jknock.setPosition(robot.JKUP);}
         robot.wheelie.setPower(1);
-        DriveFor(robot,0.65,1.0,0.0,0.0);
+        DriveFor(robot,0.7,1.0,0.0,0.0);
         robot.wheelie.setPower(0);
         DriveFor(robot,0.5,0.45,0.0,0.0);
         DriveFor(robot,0.7,-0.45,0.0,0.0);
         DriveFor(robot,0.3,0.0,0.0,0.0);
 
-        telemetry.update();
-
-        //DriveFor(robot,1.0,0.0,0.0,1.0);
-        DriveFor(robot,0.3,0,0,0);
-        RotateTo180(robot,180);
-
-
         robot.claw1.setPosition(0.5);
         robot.claw2.setPosition(0.4);
 
-        boolean dis = false;
+        DriveFor(robot,1.0,0.0,0.0,1.0);
+        DriveFor(robot,0.3,0,0,0);
+        RotateTo(robot,180, startG);
 
-        DriveFor(robot,0.5,0.0,0.0,0.0);
-        while (dis == false && runtime2.seconds() < 24 && opModeIsActive()) {
+        boolean dis = false;
+        DriveFor(robot,0.3,0.0,0.0,0.0);
+
+        DriveFor(robot, 1.0,0.0,0.7,0);
+        DriveFor(robot, 0.2,0,-1.0,0);
+
+        DriveFor(robot,0.3,0.0,0.0,0.0);
+        // shooting for 11
+        while (dis == false && runtime2.seconds() < 20 && opModeIsActive()) {
             double distanceBack = ((robot.ultra_back.getVoltage() / 5) * 512) + 2.5;//robot.ultra_back.getDistance(DistanceUnit.CM);
 
             telemetry.addData("Back", distanceBack);
             telemetry.update();
 
-            if (distanceBack < 15) {
+            if (distanceBack < 12) {
                 onmiDrive(robot,0.0, 0.45, 0.0);
-            } else if (distanceBack > 19) {
+            } else if (distanceBack > 13) {
                 onmiDrive(robot,0.0, -0.45, 0.0);
             } else {
                 onmiDrive(robot,0.0, 0.0, 0.0);
@@ -158,6 +168,8 @@ public class Blue2Protos extends AutoPull {
         telemetry.addLine("Lineup 1 Complete");
         telemetry.update();
 
+        robot.flexServo.setPosition(0.82);
+
         boolean dis2 = false;
         int count = 0;
         runtime.reset();
@@ -166,38 +178,43 @@ public class Blue2Protos extends AutoPull {
             telemetry.addData("Right", distanceRight);
             telemetry.update();
 
-            if (distanceRight > target+2) {
+            if (distanceRight > target+1) {
                 onmiDrive(robot, -0.45, 0.0, 0.0);
             }
-            else if (distanceRight < target-2) {
+            else if (distanceRight < target-1) {
                 onmiDrive(robot,0.45,0.0,0.0);
             }
             else {
                 onmiDrive(robot,0.0, 0.0, 0.0);
-                if(count >= 1) {
+                if(count >= 2) {
                     dis2 = true;
                 }
                 else {
                     count ++;
                     DriveFor(robot,0.3,0,0,0);
-                    RotateTo180(robot,180);
+                    RotateTo(robot,180, startG);
                     DriveFor(robot,0.3,0,0,0);
                     runtime.reset();
                 }
             }
             if(runtime.seconds() > 1.0 && choosen != 1) {
                 DriveFor(robot,0.3,0,0,0);
-                RotateTo180(robot,180);
+                RotateTo(robot,180, startG);
                 DriveFor(robot,0.3,0,0,0);
                 runtime.reset();
             }
         }
+        robot.flexServo.setPosition(0.196);
         telemetry.addLine("Lineup 2 Complete");
         telemetry.update();
 
         robot.dumper.setPower(0.4);
         onmiDrive(robot,0.0, 0.0, 0.0);
-        while (robot.dumper.getCurrentPosition() <= 470 && opModeIsActive() && runtime2.seconds() < 28) {
+        runtime.reset();
+        while (robot.dumper.getCurrentPosition() <= 445 && opModeIsActive() && runtime2.seconds() < 28 && runtime.seconds() < 2) {
+
+            telemetry.addData("Dumper pos", robot.dumper.getCurrentPosition());
+            telemetry.update();
             robot.dumper.setTargetPosition(480);
         }
         while (robot.dumper.getCurrentPosition() >= 5 && opModeIsActive()) {
@@ -215,42 +232,5 @@ public class Blue2Protos extends AutoPull {
         robot.claw2.setPosition(0.7);
         DriveFor(robot,1.0, 0.0, 0.0, 0.0);
 
-    }
-    public void RotateTo180(HardwareOmniRobot robot,int degrees) {
-        float heading=robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
-        double speed = 0.5;
-        boolean go=false, on=false;
-        while(on == false  && opModeIsActive()) {
-            telemetry.addData("speed",speed);
-            telemetry.addData("HEADING",heading);
-            telemetry.addData("Status", robot.imu.getSystemError());
-            telemetry.addData("Status", robot.imu.getSystemStatus());
-            telemetry.update();
-            heading=robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
-
-
-            if(heading < -150 && heading > -178) {
-                onmiDrive(robot, 0.0, 0.0, -speed);
-                if(speed > 0.35) {
-                    speed -= 0.01;
-                }
-                telemetry.addLine("1");
-            }
-            else if (-178 > heading) {
-                onmiDrive(robot, 0.0, 0.0, -speed);
-                if(speed > 0.35 && go == true) {
-                    speed -= 0.01;
-                }
-                telemetry.addLine("2");
-            } else if (degrees-2 > heading) {
-                go = true;
-                onmiDrive(robot, 0.0, 0.0, speed);
-                telemetry.addLine("3");
-            }
-            else {
-                on = true;
-                onmiDrive(robot,0.0,0.0,0.0);
-            }
-        }
     }
 }
