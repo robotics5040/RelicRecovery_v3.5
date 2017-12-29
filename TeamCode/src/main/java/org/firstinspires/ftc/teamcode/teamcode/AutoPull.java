@@ -155,8 +155,8 @@ public class AutoPull extends LinearOpMode {
         }
     }
 
-    public void rotateBy(HardwareOmniRobot robot, int degrees){
-        float heading = robot.gyro.getHeading();
+    public void rotateBy(HardwareOmniRobot robot, int degrees,int gyro){
+        float heading = robot.gyro.getHeading()-gyro;
         double output, error, lastError = 0;
         double goal  = degrees + heading;
         double speed = 0.5;
@@ -164,7 +164,7 @@ public class AutoPull extends LinearOpMode {
         //double tau_i = 2;
 
         while(heading != goal && opModeIsActive()){
-            heading = robot.gyro.getHeading();
+            heading = robot.gyro.getHeading()-gyro;
             error = goal - heading;
             speed = (gain * error) + 0.05;
             if(speed < 0.3){
