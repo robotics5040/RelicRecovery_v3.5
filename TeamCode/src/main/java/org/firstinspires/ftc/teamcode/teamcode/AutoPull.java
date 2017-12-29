@@ -149,6 +149,30 @@ public class AutoPull extends LinearOpMode {
         }
     }
 
+    public void rotateBy(HardwareOmniRobot robot, int degrees){
+        float heading = robot.gyro.getHeading();
+        double output, error, lastError = 0;
+        double goal  = degrees + heading;
+        double speed = 0.5;
+        double gain  = 0.01;
+        //double tau_i = 2;
+
+        while(heading != goal && opModeIsActive()){
+            heading = robot.gyro.getHeading();
+            error = goal - heading;
+            speed = (gain * error) + 0.05;
+            if(speed < 0.3){
+                speed = (0.027 * error);
+            }
+            /*telemetry.addData("Heading", heading);
+            telemetry.addData("Error", error);
+            telemetry.addData("speed", speed);
+            telemetry.update();*/
+            onmiDrive(robot, 0.0, 0.0, speed);
+            //lastError = error;
+        }
+    }
+
     //vuforia
     public int Vuforia(int cameraMonitorViewId, String side, VuforiaLocalizer vuforia) {
 
@@ -199,7 +223,7 @@ public class AutoPull extends LinearOpMode {
 
         return choosen;
     }
-
+/*
     public int getColumnNum(){
 
 
@@ -211,5 +235,6 @@ public class AutoPull extends LinearOpMode {
         flexPrevious = flexCurrent;
         return columnNum;
     }
+*/
 }
 
