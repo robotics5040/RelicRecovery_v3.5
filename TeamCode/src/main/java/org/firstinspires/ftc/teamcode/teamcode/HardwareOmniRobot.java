@@ -36,7 +36,7 @@ public class HardwareOmniRobot
     ColorSensor jkcolor, jkcolor2;
 
     ModernRoboticsI2cGyro gyro;
-    BNO055IMU imu;
+    //BNO055IMU imu;
 
     //ModernRoboticsI2cRangeSensor ultra_right, ultra_left,ultra_back;
 
@@ -150,17 +150,17 @@ public class HardwareOmniRobot
         flexServo.setPosition(0.196);        //out to 90 -- 0.82
 
         if(rungyro == true) {
-            BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+            /*BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
             parameters.loggingEnabled = true;
             parameters.loggingTag     = "IMU";
-            parameters.mode = BNO055IMU.SensorMode.GYRONLY;
+            //parameters.mode = BNO055IMU.SensorMode.MAGGYRO;
             //parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
             imu = hwMap.get(BNO055IMU.class, "imu");
-            imu.initialize(parameters);
+            imu.initialize(parameters);*/
 
 
-            //gyro = hwMap.get(ModernRoboticsI2cGyro.class, "gyro");
-            //gyro.calibrate();
+            gyro = hwMap.get(ModernRoboticsI2cGyro.class, "gyro");
+            gyro.calibrate();
         }
 
     }

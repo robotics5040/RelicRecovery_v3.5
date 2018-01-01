@@ -313,6 +313,8 @@ public class OmniBot_Iterative2 extends OpMode{
         telemetry.addData("2nd Left Trigger",LX);
         telemetry.addData("2nd Right Trigger",RX);
         telemetry.addData("home",gamepad2.guide);
+        telemetry.addData("color 1", robot.jkcolor.blue());
+        telemetry.addData("color 1", robot.jkcolor2.blue());
         /*
         telemetry.addData("Ultra back", robot.ultra_back.getDistance(DistanceUnit.CM));
         telemetry.addData("Ultra left", robot.ultra_left.getDistance(DistanceUnit.CM));

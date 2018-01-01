@@ -36,6 +36,10 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.RobotLog;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+
 /**
  * This file provides basic Telop driving for a Pushbot robot.
  * The code is structured as an Iterative OpMode
@@ -61,24 +65,12 @@ public class AutoTest extends AutoPull {
     @Override public void runOpMode() {
         robot.init(hardwareMap, true);
 
-        robot.grabber.setPower(0.75);
-        robot.grabber.setTargetPosition(robot.GRABBER_AUTOPOS);
-
-        while (robot.gyro.isCalibrating()){
-            telemetry.addLine("Calibrating gyro");
-            telemetry.update();
-        }
-        telemetry.addData("Waiting to start","now");
+        telemetry.addLine("waiting for start");
         telemetry.update();
 
         waitForStart();
-        float heading = robot.gyro.getHeading();
-        telemetry.addData("heading",heading);
-        telemetry.update();
-        RotateTo(robot,90);
-
-        telemetry.addData("grabberpos", robot.grabber.getCurrentPosition());
-        telemetry.update();
-        DriveFor(robot,2.0,0.0,0.0,0.0);
+        double rotate = 0.47;
+        boolean first = false;
     }
+
 }

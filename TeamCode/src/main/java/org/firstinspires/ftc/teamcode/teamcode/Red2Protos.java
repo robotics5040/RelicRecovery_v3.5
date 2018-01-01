@@ -97,11 +97,9 @@ public class Red2Protos extends AutoPull {
             telemetry.addData("HEADING",robot.gyro.getHeading());
             telemetry.update();
             idle();
+            
         }
-
-        telemetry.addData("Status", "Ready to run");
-        telemetry.update();
-
+        int startG = robot.gyro.getHeading();
         RobotLog.ii("5040MSG","Robot started");
         //waitForStart();
         runtime2.reset();
@@ -113,16 +111,16 @@ public class Red2Protos extends AutoPull {
 
         switch (choosen) {
             case (1):
-                target = 48;
+                target = 22;
                 break;
             case (2):
-                target = 64;
+                target = 30;
                 break;
             case (3):
-                target = 79;
+                target = 36;
                 break;
             default:
-                target = 48;
+                target = 29;
                 break;
         }
 
@@ -132,106 +130,100 @@ public class Red2Protos extends AutoPull {
         JewelKnock(robot,"red");
         DriveFor(robot,0.3,0.0,0.0,0.0);
         if(robot.jknock.getPosition() != robot.JKUP) {robot.jknock.setPosition(robot.JKUP);}
-        robot.wheelie.setPower(-1);
-        DriveFor(robot,1.0,-1.0,0.0,0.0);
+        robot.wheelie.setPower(1);
+        DriveFor(robot,0.7,-1.0,0.0,0.0);
         robot.wheelie.setPower(0);
+        DriveFor(robot,0.5,-0.45,0.0,0.0);
+        DriveFor(robot,0.7,0.45,0.0,0.0);
         DriveFor(robot,0.3,0.0,0.0,0.0);
 
-        telemetry.update();
+        robot.claw1.setPosition(0.5);
+        robot.claw2.setPosition(0.4);
 
-        RotateTo0(robot,0);
-
-
-        robot.claw1.setPosition(0.3);
-        robot.claw2.setPosition(0.6);
+        DriveFor(robot,0.3,0,0,0);
+        RotateTo0(robot,0, startG);
 
         boolean dis = false;
+        DriveFor(robot,0.3,0.0,0.0,0.0);
 
-        DriveFor(robot,0.5,0.0,0.0,0.0);
-        while (dis == false && runtime2.seconds() < 24 && opModeIsActive()) {
-            double distanceBack =0;// robot.ultra_back.getDistance(DistanceUnit.CM);
+        //DriveFor(robot, 1.0,0.0,-0.7,0);
+        //DriveFor(robot, 0.2,0,1.0,0);
+
+        DriveFor(robot,0.3,0.0,0.0,0.0);
+        // shooting for 11
+        while (dis == false && runtime2.seconds() < 20 && opModeIsActive()) {
+            double distanceBack = ((robot.ultra_back.getVoltage() / 5) * 512) + 2.5;//robot.ultra_back.getDistance(DistanceUnit.CM);
 
             telemetry.addData("Back", distanceBack);
             telemetry.update();
 
-            if (distanceBack == 23) {
-                onmiDrive(robot,0.0, 0.0, 0.0);
-                dis = true;
-            } else if (distanceBack > 23) {
+            if (distanceBack < 11) {
+                onmiDrive(robot,0.0, 0.45, 0.0);
+            } else if (distanceBack > 12) {
                 onmiDrive(robot,0.0, -0.45, 0.0);
             } else {
-                onmiDrive(robot,0.0, 0.45, 0.0);
+                onmiDrive(robot,0.0, 0.0, 0.0);
+                dis = true;
             }
         }
 
         telemetry.addLine("Lineup 1 Complete");
         telemetry.update();
 
+        robot.flexServo.setPosition(0.82);
+
         boolean dis2 = false;
-        runtime.reset();
         int count = 0;
+        runtime.reset();
         while (dis2 == false && runtime2.seconds() < 26 && opModeIsActive() && dis == true) {
-            double distanceLeft =0;// robot.ultra_left.getDistance(DistanceUnit.CM);
-            //double distanceRight = robot.ultra_right.getDistance(DistanceUnit.CM);
+            double distanceLeft = ((robot.ultra_left.getVoltage() / 5) * 512) + 2.5;// robot.ultra_right.getDistance(DistanceUnit.CM);
             telemetry.addData("Left", distanceLeft);
-            //telemetry.addData("Right", distanceRight);
             telemetry.update();
 
-            if (distanceLeft > 3) { //eliminates the 1.242445621452 crap
-                if (distanceLeft == target) {
-                    onmiDrive(robot,0.0, 0.0, 0.0);
-                    if(count >= 2) {
-                        dis2 = true;
-                    }
-                    else {
-                        count ++;
-                        DriveFor(robot,0.3,0,0,0);
-                        RotateTo0(robot,0);
-                        DriveFor(robot,0.3,0,0,0);
-                        runtime.reset();
-                    }
-
-                } else if (distanceLeft < target) {
-                    onmiDrive(robot,-0.45,0.0,0.0);
-                    //NavX(0.0, -0.3);
-                } else {
-                    onmiDrive(robot,0.45,0.0,0.0);
-                    //NavX(0.0, 0.3);
+            if (distanceLeft > target+1) {
+                onmiDrive(robot, 0.45, 0.0, 0.0);
+            }
+            else if (distanceLeft < target-1) {
+                onmiDrive(robot,-0.45,0.0,0.0);
+            }
+            else {
+                onmiDrive(robot,0.0, 0.0, 0.0);
+                if(count >= 1) {
+                    dis2 = true;
                 }
-                if(runtime.seconds() > 1.0 && choosen != 1) {
+                else {
+                    count ++;
                     DriveFor(robot,0.3,0,0,0);
-                    RotateTo0(robot,0);
+                    RotateTo0(robot,0, startG);
                     DriveFor(robot,0.3,0,0,0);
                     runtime.reset();
                 }
             }
-            else {
-                onmiDrive(robot,0,0,0);
-            }
-            /*if(distanceRight > 30 && distanceRight < 60) {
-                DriveFor(robot,0.5,-0.4,0,0);
-                RotateTo0(robot,0);
-                DriveFor(robot,0.5,0,-0.4,0);
+            if(runtime.seconds() > 1.0 && choosen != 1) {
+                DriveFor(robot,0.3,0,0,0);
+                RotateTo0(robot,0, startG);
                 DriveFor(robot,0.3,0,0,0);
                 runtime.reset();
-            }*/
+            }
         }
-
+        robot.flexServo.setPosition(0.196);
         telemetry.addLine("Lineup 2 Complete");
         telemetry.update();
 
         robot.dumper.setPower(0.4);
         onmiDrive(robot,0.0, 0.0, 0.0);
-        while (robot.dumper.getCurrentPosition() <= 470 && opModeIsActive() && runtime2.seconds() < 28) {
+        runtime.reset();
+        while (robot.dumper.getCurrentPosition() <= 470 && opModeIsActive() && runtime2.seconds() < 28 && runtime.seconds() < 1.5) {
             robot.dumper.setTargetPosition(480);
         }
+
+        DriveFor(robot,0.5,0.0,0.0,0.0);
+        DriveFor(robot,0.5, 0.45, 0.0, 0.0);
+
         while (robot.dumper.getCurrentPosition() >= 5 && opModeIsActive()) {
             robot.dumper.setTargetPosition(0);
         }
 
-
-        DriveFor(robot,0.5,0.0,0.0,0.0);
-        DriveFor(robot,0.5, 0.45, 0.0, 0.0);
         if(runtime2.seconds() < 29) {
             DriveFor(robot, 1.0, -0.8, 0.0, 0.0);
             DriveFor(robot, 0.5, 0.45, 0.0, 0.0);
@@ -240,21 +232,37 @@ public class Red2Protos extends AutoPull {
         robot.claw2.setPosition(0.7);
         DriveFor(robot,1.0, 0.0, 0.0, 0.0);
 
+
     }
 
-    public void RotateTo0(HardwareOmniRobot robot,int degrees) {
-        float heading = robot.gyro.getHeading();
-        double speed = -0.4;
+    public void RotateTo0(HardwareOmniRobot robot,int degrees,int gyro) {
+        int heading=robot.gyro.getHeading()-gyro;
+        double speed = 0.5;
+        boolean go = false;
+
         while(heading != degrees  && opModeIsActive()) {
             telemetry.addData("HEADING",heading);
             telemetry.update();
-            heading = robot.gyro.getHeading();
-            if (degrees > heading) {
+            heading = robot.gyro.getHeading()-gyro;
+
+            if(heading > 250) {
+                onmiDrive(robot, 0, 0, speed);
+                if(speed > 0.35 && go == true) {
+                    speed -= 0.01;
+                }
+                telemetry.addLine("1");
+            }
+            else if (degrees < heading) {
                 onmiDrive(robot, 0.0, 0.0, -speed);
-            } else if(heading > 300) {
-                onmiDrive(robot, 0.0, 0.0, -speed);
-            } else if (degrees < heading) {
+                go = true;
+                telemetry.addLine("2");
+            }
+            else if (degrees > heading) {
                 onmiDrive(robot, 0.0, 0.0, speed);
+                if(speed > 0.35 && go == true) {
+                    speed -= 0.01;
+                }
+                telemetry.addLine("3");
             }
             else {
                 onmiDrive(robot,0.0,0.0,0.0);

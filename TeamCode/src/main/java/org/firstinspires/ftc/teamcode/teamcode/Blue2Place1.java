@@ -32,23 +32,11 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package org.firstinspires.ftc.teamcode.teamcode;
 
-import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.ReadWriteFile;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
-import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
-
-import java.io.File;
 
 /**
  * This file provides basic Telop driving for a Pushbot robot.
@@ -65,9 +53,9 @@ import java.io.File;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Omnibot: Blue2Protos", group="Omnibot")
+@Autonomous(name="Omnibot: Blue2Place1", group="Omnibot")
 //@Disabled
-public class Blue2Protos extends AutoPull {
+public class Blue2Place1 extends AutoPull {
 
     HardwareOmniRobot robot   = new HardwareOmniRobot();
     ElapsedTime runtime = new ElapsedTime();
