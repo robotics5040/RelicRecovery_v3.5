@@ -227,11 +227,66 @@ public class Red1Protos extends AutoPull {
 
         if(runtime2.seconds() < 29) {
             DriveFor(robot, 1.0, -0.8, 0.0, 0.0);
-            DriveFor(robot, 0.5, 0.45, 0.0, 0.0);
-        }
-        robot.claw1.setPosition(0.3);
-        robot.claw2.setPosition(0.7);
-        DriveFor(robot,1.0, 0.0, 0.0, 0.0);
+            while (robot.grabber.getCurrentPosition() >= 10 && opModeIsActive()) {
+                robot.grabber.setTargetPosition(0);
+            }
 
+            if(choosen == 1){
+                DriveFor(robot, .3,1,0,0);
+                DriveFor(robot,0.2,0,0,0);
+                DriveFor(robot, .2,0,-1,0);
+            }
+            else if(choosen == 3){
+                DriveFor(robot, .3,1,0,0);
+                DriveFor(robot,0.2,0,0,0);
+                DriveFor(robot, .2,0,1,0);
+            }
+
+            DriveFor(robot, 2.0, 1.0, 0.0, 0.0);
+
+            robot.claw1.setPosition(0.72);
+            robot.claw2.setPosition(0.28);
+
+            DriveFor(robot, 0.7, -1, 0,0);
+            DriveFor(robot, 0.2, 0, 0,1);
+            DriveFor(robot, 0.2, 0, 0,-1);
+            DriveFor(robot, 0.2, 0, 0,1);
+            DriveFor(robot, 0.2, 0, 0,-1);
+            DriveFor(robot, 0.2, 0, 0,1);
+            DriveFor(robot, 0.2, 0, 0,-1);
+
+            runtime.reset();
+            while (robot.grabber.getCurrentPosition() <= 1540 && opModeIsActive() && runtime2.seconds() < 60 && runtime.seconds() < 2) {
+
+                telemetry.addData("grabber pos", robot.grabber.getCurrentPosition());
+                telemetry.update();
+                robot.grabber.setTargetPosition(1560);
+            }
+            robot.claw1.setPosition(0.3);
+            robot.claw2.setPosition(0.7);
+
+            while (robot.grabber.getCurrentPosition() >= robot.GRABBER_AUTOPOS+20 && opModeIsActive()) {
+                robot.grabber.setTargetPosition(robot.GRABBER_AUTOPOS);
+            }
+            robot.claw1.setPosition(.5);
+            robot.claw2.setPosition(.5);
+
+            while (robot.grabber.getCurrentPosition() >= 10 && opModeIsActive()) {
+                robot.grabber.setTargetPosition(0);
+            }
+
+            DriveFor(robot, 1, 1, 0.0, 0.0);
+
+            robot.claw1.setPosition(0.72);
+            robot.claw2.setPosition(0.28);
+
+            DriveFor(robot, 0.5,-1,0,0);
+            while(opModeIsActive() && ((robot.ultra_back.getVoltage() / 5) * 512) + 2.5 > 16) {
+                telemetry.addData("back ", ((robot.ultra_back.getVoltage() / 5) * 512) + 2.5);
+                telemetry.update();
+                onmiDrive(robot,0,-1,0);
+            }
+            onmiDrive(robot,0,0,0);
+        }
     }
 }

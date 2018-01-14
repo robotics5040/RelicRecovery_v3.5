@@ -37,6 +37,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 
 /**
@@ -82,7 +83,7 @@ public class Red2Place1 extends AutoPull {
         VuforiaLocalizer vuforia = ClassFactory.createVuforiaLocalizer(parameters);
 
 
-        while (robot.gyro.isCalibrating()){
+        while (robot.gyro.isCalibrating() && robot.gyro2.isCalibrating()){
             telemetry.addLine("Calibrating gyro");
             telemetry.update();
         }
@@ -123,6 +124,9 @@ public class Red2Place1 extends AutoPull {
         telemetry.addData("VuMark", "%s visible", choosen);
         telemetry.update();
 
+        robot.claw1.setPosition(0.55);
+        robot.claw2.setPosition(0.45);
+
         JewelKnock(robot,"red");
         DriveFor(robot,0.3,0.0,0.0,0.0);
         if(robot.jknock.getPosition() != robot.JKUP) {robot.jknock.setPosition(robot.JKUP);}
@@ -132,9 +136,6 @@ public class Red2Place1 extends AutoPull {
         DriveFor(robot,0.5,-0.45,0.0,0.0);
         DriveFor(robot,0.7,0.45,0.0,0.0);
         DriveFor(robot,0.3,0.0,0.0,0.0);
-
-        robot.claw1.setPosition(0.5);
-        robot.claw2.setPosition(0.4);
 
         DriveFor(robot,0.3,0,0,0);
         RotateTo0(robot,0, startG);
@@ -148,14 +149,14 @@ public class Red2Place1 extends AutoPull {
         DriveFor(robot,0.3,0.0,0.0,0.0);
         // shooting for 11
         while (dis == false && runtime2.seconds() < 20 && opModeIsActive()) {
-            double distanceBack = ((robot.ultra_back.getVoltage() / 5) * 512) + 2.5;//robot.ultra_back.getDistance(DistanceUnit.CM);
+            double distanceBack = ((robot.ultra_back.getVoltage() / 5) * 512) + 2.5;
 
             telemetry.addData("Back", distanceBack);
             telemetry.update();
 
-            if (distanceBack < 11) {
+            if (distanceBack < 10) {
                 onmiDrive(robot,0.0, 0.45, 0.0);
-            } else if (distanceBack > 12) {
+            } else if (distanceBack > 11) {
                 onmiDrive(robot,0.0, -0.45, 0.0);
             } else {
                 onmiDrive(robot,0.0, 0.0, 0.0);

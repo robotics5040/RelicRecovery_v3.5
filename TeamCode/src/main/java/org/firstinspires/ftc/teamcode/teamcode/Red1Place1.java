@@ -79,7 +79,7 @@ public class Red1Place1 extends AutoPull {
 
 
 
-        while (robot.gyro.isCalibrating()){
+        while (robot.gyro.isCalibrating() && robot.gyro2.isCalibrating()){
             telemetry.addLine("Calibrating gyro");
             telemetry.update();
         }
@@ -87,14 +87,15 @@ public class Red1Place1 extends AutoPull {
 
             // Display the light level while we are waiting to start
             telemetry.addData("HEADING",robot.gyro.getHeading());
+            telemetry.addData("heading2", robot.gyro2.getHeading());
             telemetry.update();
             idle();
         }
-        int startG = robot.gyro.getHeading();
-
+        //int startG = robot.gyro.getHeading();
+        int startG2 = robot.gyro2.getHeading();
         runtime2.reset();
 
-        RobotLog.ii("5040MSG","Pre Start");
+        //RobotLog.ii("5040MSG","Pre Start");
         //waitForStart();
         runtime.reset();
         RobotLog.ii("5040MSG","Post Start");
@@ -121,66 +122,42 @@ public class Red1Place1 extends AutoPull {
         telemetry.addData("VuMark", "%s visible", choosen);
         telemetry.update();
 
+        robot.claw1.setPosition(0.55);
+        robot.claw2.setPosition(0.45);
+
         JewelKnock(robot,"red");
         DriveFor(robot,0.3,0.0,0.0,0.0);
         if(robot.jknock.getPosition() != robot.JKUP) {robot.jknock.setPosition(robot.JKUP);}
         robot.wheelie.setPower(-1);
-        DriveFor(robot,0.8,-1.0,0.0,0.0);
+        DriveFor(robot,1,-1.0,0.0,0.0);
         robot.wheelie.setPower(0);
         DriveFor(robot,0.3,0.0,0.0,0.0);
 
-        telemetry.update();
-
-        robot.claw1.setPosition(0.55);
-        robot.claw2.setPosition(0.45);
 
         DriveFor(robot,0.5,0.0,0.0,1.0);
         DriveFor(robot,0.3,0,0,0);
-        RotateTo(robot,270, startG);
+        RotateTo270(robot,270, 0, startG2);
+        DriveFor(robot,1.0,-1,0,0);
+        int startG = robot.gyro.getHeading();
+        DriveFor(robot,0.5,0.5,0,0);
 
         boolean dis = false;
-        int coun = 0;
-        DriveFor(robot,0.3,0.0,0.0,0.0);
-        // shooting for 11
-        while (dis == false && runtime2.seconds() < 20 && opModeIsActive()) {
-            double distanceBack = ((robot.ultra_back.getVoltage() / 5) * 512) + 2.5;//robot.ultra_back.getDistance(DistanceUnit.CM);
 
-            telemetry.addData("Back", distanceBack);
-            telemetry.update();
-
-            if (distanceBack < 10) {
-                onmiDrive(robot,0.0, 0.45, 0.0);
-            } else if (distanceBack > 11) {
-                onmiDrive(robot,0.0, -0.45, 0.0);
-            } else {
-                if(coun >= 1) {
-                    onmiDrive(robot, 0.0, 0.0, 0.0);
-                    dis = true;
-                }
-                else {
-                    coun++;
-                }
-            }
-        }
-
-        RobotLog.ii("5040MSG","Post BackPos");
         telemetry.addLine("Lineup 1 Complete");
         telemetry.update();
-
-        robot.flexServo.setPosition(0.82);
 
         boolean dis2 = false;
         int count = 0;
         runtime.reset();
         while (dis2 == false && runtime2.seconds() < 26 && opModeIsActive()) {
-            double distanceRight = ((robot.ultra_left.getVoltage() / 5) * 512) + 2.5;// robot.ultra_right.getDistance(DistanceUnit.CM);
-            telemetry.addData("Right", distanceRight);
+            double distanceLeft = ((robot.ultra_left.getVoltage() / 5) * 512) + 2.5;// robot.ultra_right.getDistance(DistanceUnit.CM);
+            telemetry.addData("Left", distanceLeft);
             telemetry.update();
 
-            if (distanceRight > target+1) {
+            if (distanceLeft > target+1) {
                 onmiDrive(robot, 0.45, 0.0, 0.0);
             }
-            else if (distanceRight < target-1) {
+            else if (distanceLeft < target-1) {
                 onmiDrive(robot,-0.45,0.0,0.0);
             }
             else {
@@ -191,36 +168,37 @@ public class Red1Place1 extends AutoPull {
                 else {
                     count ++;
                     DriveFor(robot,0.3,0,0,0);
-                    RotateTo(robot,270, startG);
-                    DriveFor(robot,0.3,0,0,0);
+                    //RotateTo(robot,270, startG, startG2);
+                    //DriveFor(robot,0.3,0,0,0);
                     runtime.reset();
                 }
             }
             if(runtime.seconds() > 1.0 && choosen != 1) {
                 DriveFor(robot,0.3,0,0,0);
-                RotateTo(robot,270, startG);
-                DriveFor(robot,0.3,0,0,0);
+                //RotateTo(robot,270, startG, startG2);
+                //DriveFor(robot,0.3,0,0,0);
                 runtime.reset();
             }
         }
-        robot.flexServo.setPosition(0.196);
         telemetry.addLine("Lineup 2 Complete");
         telemetry.update();
 
         robot.dumper.setPower(0.4);
         onmiDrive(robot,0.0, 0.0, 0.0);
         runtime.reset();
-        while (robot.dumper.getCurrentPosition() <= 470 && opModeIsActive() && runtime2.seconds() < 28 && runtime.seconds() < 1.5) {
+        while (robot.dumper.getCurrentPosition() <= 445 && opModeIsActive() && runtime2.seconds() < 28 && runtime.seconds() < 1.5) {
+
+            telemetry.addData("Dumper pos", robot.dumper.getCurrentPosition());
+            telemetry.update();
             robot.dumper.setTargetPosition(480);
         }
 
         DriveFor(robot,0.5,0.0,0.0,0.0);
-        DriveFor(robot,0.5, 0.45, 0.0, 0.0);
+        DriveFor(robot,0.5,0.45,0.0,0.0);
 
         while (robot.dumper.getCurrentPosition() >= 5 && opModeIsActive()) {
             robot.dumper.setTargetPosition(0);
         }
-
         if(runtime2.seconds() < 29) {
             DriveFor(robot, 1.0, -0.8, 0.0, 0.0);
             DriveFor(robot, 0.5, 0.45, 0.0, 0.0);
@@ -228,6 +206,30 @@ public class Red1Place1 extends AutoPull {
         robot.claw1.setPosition(0.3);
         robot.claw2.setPosition(0.7);
         DriveFor(robot,1.0, 0.0, 0.0, 0.0);
-
     }
+
+    public void RotateTo270(HardwareOmniRobot robot,int degrees, int gyro, int gyro2) {
+        int heading = robot.gyro2.getHeading();//getGyro(robot, gyro, gyro2);
+        double speed = 0.5;
+        boolean go = false;
+        runtime.reset();
+
+        while (heading != degrees && opModeIsActive() && runtime.seconds() < 3) {
+            telemetry.addData("HEADING", heading);
+            telemetry.update();
+            heading = robot.gyro2.getHeading();//getGyro(robot, gyro, gyro2);
+            if (degrees-5 < heading) {
+                onmiDrive(robot, 0.0, 0.0, -speed);
+                go = true;
+            } else if (degrees+5 > heading) {
+                onmiDrive(robot, 0.0, 0.0, speed);
+                if (speed > 0.42 && go == true) {
+                    speed -= 0.01;
+                }
+            } else {
+                onmiDrive(robot, 0.0, 0.0, 0.0);
+            }
+        }
+    }
+
 }
