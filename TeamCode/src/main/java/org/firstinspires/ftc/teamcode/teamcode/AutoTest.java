@@ -70,61 +70,24 @@ public class AutoTest extends AutoPull {
     BNO055IMU imu;
 
     @Override public void runOpMode() {
-        /*BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.loggingEnabled = true;
-        parameters.loggingTag     = "IMU";
-        parameters.mode = BNO055IMU.SensorMode.IMU;
-        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
-        imu.initialize(parameters);*/
         robot.init(hardwareMap, true);
-
-        //setUpIMU(hardwareMap, "imu");
 
         telemetry.addLine("waiting for start");
         telemetry.update();
-        //channe
-        /*while (!(isStarted() || isStopRequested())) {
-            telemetry.addData("calibrated?", imu.isSystemCalibrated());
-            telemetry.addData("calibrated?gyro ", imu.isGyroCalibrated());
-            telemetry.addData("calibrated?accel ", imu.isAccelerometerCalibrated());
-            telemetry.update();
-        }
-        robot.grabber.setPower(0.4);
 
-        imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
-
-        DriveFor(robot,1.0,1.0,0,0);
-        while(opModeIsActive()){
-            double heading = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
-            telemetry.addData("heading", heading);
-            telemetry.addData("calibrated?", imu.isSystemCalibrated());
-            telemetry.addData("calibrated?gyro ", imu.isGyroCalibrated());
-            telemetry.addData("calibrated?accel ", imu.isAccelerometerCalibrated());
-            telemetry.update();
-        }*/
         while (!(isStarted() || isStopRequested())) {
             telemetry.addData("calibrated?gyro ", robot.imu.isGyroCalibrated());
             telemetry.update();
         }
 
+        DriveFor(robot,1.5,1,0,0);
+
         RotateTo(robot, 90, 0);
+        while(opModeIsActive()) {
+            telemetry.addData("calibrated?gyro ", robot.imu.isGyroCalibrated());
+            telemetry.addData("heading", robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle);
+            telemetry.update();
+        }
 
-    }
-
-    private void setUpIMU(HardwareMap hardwareMap, String id) {
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
-        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-        parameters.calibrationDataFile = "AdafruitIMUCalibration.json"; // see the calibration sample opmode
-        parameters.loggingEnabled      = true;
-        parameters.loggingTag          = "IMU";
-        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
-
-        // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
-        // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
-        // and named "imu".
-        this.imu = hardwareMap.get(BNO055IMU.class, id);
-        this.imu.initialize(parameters);
     }
 }
