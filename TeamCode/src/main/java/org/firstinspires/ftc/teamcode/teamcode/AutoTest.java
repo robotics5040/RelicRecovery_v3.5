@@ -32,13 +32,18 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package org.firstinspires.ftc.teamcode.teamcode;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Position;
+import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 
 /**
  * This file provides basic Telop driving for a Pushbot robot.
@@ -62,15 +67,58 @@ public class AutoTest extends AutoPull {
     HardwareOmniRobot robot   = new HardwareOmniRobot();
     ElapsedTime runtime = new ElapsedTime();
 
+    BNO055IMU imu;
+
     @Override public void runOpMode() {
-        robot.init(hardwareMap, true);
+        /*BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.loggingEnabled = true;
+        parameters.loggingTag     = "IMU";
+        parameters.mode = BNO055IMU.SensorMode.IMU;
+        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        imu.initialize(parameters);*/
+        robot.init(hardwareMap, false);
+
+        setUpIMU(hardwareMap, "imu");
 
         telemetry.addLine("waiting for start");
         telemetry.update();
 
-        waitForStart();
-        double rotate = 0.47;
-        boolean first = false;
+        while (!(isStarted() || isStopRequested())) {
+            telemetry.addData("calibrated?", imu.isSystemCalibrated());
+            telemetry.addData("calibrated?gyro ", imu.isGyroCalibrated());
+            telemetry.addData("calibrated?accel ", imu.isAccelerometerCalibrated());
+            telemetry.update();
+        }
+
+        robot.grabber.setPower(0.4);
+
+        imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
+
+        DriveFor(robot,1.0,1.0,0,0);
+        while(opModeIsActive()){
+            double heading = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
+            telemetry.addData("heading", heading);
+            telemetry.addData("calibrated?", imu.isSystemCalibrated());
+            telemetry.addData("calibrated?gyro ", imu.isGyroCalibrated());
+            telemetry.addData("calibrated?accel ", imu.isAccelerometerCalibrated());
+            telemetry.update();
+        }
     }
 
+    private void setUpIMU(HardwareMap hardwareMap, String id) {
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters.calibrationDataFile = "AdafruitIMUCalibration.json"; // see the calibration sample opmode
+        parameters.loggingEnabled      = true;
+        parameters.loggingTag          = "IMU";
+        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
+
+        // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
+        // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
+        // and named "imu".
+        this.imu = hardwareMap.get(BNO055IMU.class, id);
+        this.imu.initialize(parameters);
+    }
 }
