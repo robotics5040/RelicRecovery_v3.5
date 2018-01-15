@@ -77,14 +77,14 @@ public class AutoTest extends AutoPull {
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);*/
-        robot.init(hardwareMap, false);
+        robot.init(hardwareMap, true);
 
-        setUpIMU(hardwareMap, "imu");
+        //setUpIMU(hardwareMap, "imu");
 
         telemetry.addLine("waiting for start");
         telemetry.update();
 
-        while (!(isStarted() || isStopRequested())) {
+        /*while (!(isStarted() || isStopRequested())) {
             telemetry.addData("calibrated?", imu.isSystemCalibrated());
             telemetry.addData("calibrated?gyro ", imu.isGyroCalibrated());
             telemetry.addData("calibrated?accel ", imu.isAccelerometerCalibrated());
@@ -102,7 +102,14 @@ public class AutoTest extends AutoPull {
             telemetry.addData("calibrated?gyro ", imu.isGyroCalibrated());
             telemetry.addData("calibrated?accel ", imu.isAccelerometerCalibrated());
             telemetry.update();
+        }*/
+        while (!(isStarted() || isStopRequested())) {
+            telemetry.addData("calibrated?gyro ", robot.imu.isGyroCalibrated());
+            telemetry.update();
         }
+
+        RotateTo(robot, 90, 0);
+
     }
 
     private void setUpIMU(HardwareMap hardwareMap, String id) {
