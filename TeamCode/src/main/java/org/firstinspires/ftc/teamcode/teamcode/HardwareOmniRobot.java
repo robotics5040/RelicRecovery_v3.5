@@ -215,7 +215,7 @@ public class HardwareOmniRobot
      *
      * @param periodMs  Length of wait cycle in mSec.
      */
-    public void waitForTick(long periodMs) {
+    public void waitForTick(long periodMs) {//ch
 
         long  remaining = periodMs - (long)period.milliseconds();
 

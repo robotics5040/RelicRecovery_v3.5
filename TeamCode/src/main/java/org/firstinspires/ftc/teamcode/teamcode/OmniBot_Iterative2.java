@@ -310,7 +310,7 @@ public class OmniBot_Iterative2 extends OpMode{
         double power = 1.0;
         final int RELIC_OUT = 2750; // Minimum Value to Prevent Over Extension
         final int RELIC_IN  = 0;
-        double SERVO_INCREMENT = 0.04, decay = 0.008;
+        double SERVO_INCREMENT = 0.04, decay = 0.008;//ch
 
         if(right_stick_y_2 < -0.1 && robot.relicMotor.getCurrentPosition() < RELIC_OUT){
             //telemetry.addLine("In the Relic Slide if");
