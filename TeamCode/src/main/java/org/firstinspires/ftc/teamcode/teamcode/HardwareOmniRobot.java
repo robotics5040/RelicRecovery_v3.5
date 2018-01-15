@@ -155,7 +155,7 @@ public class HardwareOmniRobot
         dumper.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         dumper.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        RobotLog.ii("5040MSGHW","Everything setMode adn Direction run");
+        RobotLog.ii("5040MSGHW","Everything setMode and Direction run");
 
         // Set all motors to zero power
         leftMotor1.setPower(0);
@@ -172,6 +172,8 @@ public class HardwareOmniRobot
         relicClaw.setPosition(0.0);
         relicWrist.setPosition(0.94);
         flexServo.setPosition(0.196);        //out to 90 -- 0.82
+        RobotLog.ii("5040MSGHW", "Everything Initialized Correctly");
+
 
         if(rungyro == true) {
             BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -182,15 +184,23 @@ public class HardwareOmniRobot
             parameters.loggingTag          = "IMU";
             parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
 
-            // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
-            // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
-            // and named "imu".
             this.imu = hwMap.get(BNO055IMU.class, "imu");
             this.imu.initialize(parameters);
             imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
+
+            //Close the claw to clear the relic arm
+            claw2.setPosition(0.3);
+
+            //Move the grabber Up
+            while(grabber.getCurrentPosition() < GRABBER_AUTOPOS - 10) {
+                grabber.setPower(0.75);
+                grabber.setTargetPosition(GRABBER_AUTOPOS);
+            }
+
+            //Move the claw back to a semi-open position
+            claw2.setPosition(0.9);
+            //The robot is now initialized within 18 inches!
         }
-
-
     }
 
     /***
