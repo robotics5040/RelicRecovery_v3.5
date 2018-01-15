@@ -77,7 +77,7 @@ public class Blue2Place1 extends AutoPull {
         parameters.cameraDirection = VuforiaLocalizer.CameraDirection.FRONT;
         VuforiaLocalizer vuforia = ClassFactory.createVuforiaLocalizer(parameters);
 
-        while (robot.gyro.isCalibrating() && robot.gyro2.isCalibrating()){
+       /* while (robot.gyro.isCalibrating() && robot.gyro2.isCalibrating()){
             telemetry.addLine("Calibrating gyro");
             telemetry.update();
         }
@@ -87,7 +87,7 @@ public class Blue2Place1 extends AutoPull {
             idle();
         }
 
-        int startG = robot.gyro.getHeading();
+        int startG = robot.gyro.getHeading();*/
 
         runtime.reset();
         runtime2.reset();
@@ -128,32 +128,21 @@ public class Blue2Place1 extends AutoPull {
 
         DriveFor(robot,1.0,0.0,0.0,1.0);
         DriveFor(robot,0.3,0,0,0);
-        RotateTo(robot,180, startG);
+        RotateTo(robot,90, -90);
+        DriveFor(robot,0.3,0.0,0.0,0.0);
+
+        //line up back
+        DriveFor(robot, 0.3,0,-1,0);
+        DriveFor(robot,0.6,-1,0,0);
+        DriveFor(robot,0.3,0.5,0,0);
+        DriveFor(robot,0.3,0,0,0);
 
         boolean dis = false;
 
         DriveFor(robot,0.3,0.0,0.0,0.0);
-        // shooting for 11
-        while (dis == false && runtime2.seconds() < 20 && opModeIsActive()) {
-            double distanceBack = ((robot.ultra_back.getVoltage() / 5) * 512) + 2.5;
-
-            telemetry.addData("Back", distanceBack);
-            telemetry.update();
-
-            if (distanceBack < 10) {
-                onmiDrive(robot,0.0, 0.45, 0.0);
-            } else if (distanceBack > 11) {
-                onmiDrive(robot,0.0, -0.45, 0.0);
-            } else {
-                onmiDrive(robot,0.0, 0.0, 0.0);
-                dis = true;
-            }
-        }
 
         telemetry.addLine("Lineup 1 Complete");
         telemetry.update();
-
-        robot.flexServo.setPosition(0.82);
 
         boolean dis2 = false;
         int count = 0;
@@ -177,19 +166,19 @@ public class Blue2Place1 extends AutoPull {
                 else {
                     count ++;
                     DriveFor(robot,0.3,0,0,0);
-                    RotateTo(robot,180, startG);
-                    DriveFor(robot,0.3,0,0,0);
+                    //RotateTo(robot,90, -90);
+                    //DriveFor(robot,0.3,0,0,0);
                     runtime.reset();
                 }
             }
             if(runtime.seconds() > 1.0 && choosen != 1) {
                 DriveFor(robot,0.3,0,0,0);
-                RotateTo(robot,180, startG);
-                DriveFor(robot,0.3,0,0,0);
+                //RotateTo(robot,90, -90);
+                //DriveFor(robot,0.3,0,0,0);
                 runtime.reset();
             }
         }
-        robot.flexServo.setPosition(0.196);
+
         telemetry.addLine("Lineup 2 Complete");
         telemetry.update();
 
@@ -201,7 +190,7 @@ public class Blue2Place1 extends AutoPull {
         }
 
         DriveFor(robot,0.5,0.0,0.0,0.0);
-        DriveFor(robot,0.5, 0.45, 0.0, 0.0);
+        DriveFor(robot,0.5, 0.5, 0.0, 0.0);
 
         while (robot.dumper.getCurrentPosition() >= 5 && opModeIsActive()) {
             robot.dumper.setTargetPosition(0);
