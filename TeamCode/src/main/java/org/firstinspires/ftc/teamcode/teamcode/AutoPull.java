@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
 import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
@@ -131,15 +132,26 @@ public class AutoPull extends LinearOpMode {
 
     //rotates to degree. goes from 0 to 359
     public void RotateTo(HardwareOmniRobot robot, int degrees, int gyro) {
-        double p;
-        double i;
-        double d;
+        double p = 0.05;
+        double i = 0.005;
+        double d = 0.0025;
 
         PID pid = new PID(p, i, d);
         pid.setSetPoint(degrees);
-        while(opModeIsActive() && ){
-            double heading = robot.;
-            pid.update();
+
+        while(opModeIsActive()){
+            double heading = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
+            double power = pid.update(heading);
+            power = Range.clip(power, -0.5, 0.5);
+
+            robot.onmiDrive(0.0, 0.0, power);
+
+            if(Math.abs(heading - degrees) < 1.0){
+                break;
+            }
+
+            telemetry.addData("Heading: ", heading);
+            telemetry.update();
         }
 
     }
@@ -154,18 +166,18 @@ public class AutoPull extends LinearOpMode {
 
     public void rotateBy(HardwareOmniRobot robot, int degrees,int gyro){
         float heading = robot.gyro.getHeading()-gyro;
-        /*TRAVIS'S 'POOR MAN'S PID*/
+        /*TRAVIS'S 'POOR MAN'S PID
             double realMinSpeed = 0.29;
             double realMaxSpeed = 1.0;
 
             double theoreticalSpeed = realMaxSpeed - realMinSpeed;
 
-            int dTheta = Math.abs((currentHeading - desiredHeading + 180) % 360 - 100));
+            //int dTheta = Math.abs((currentHeading - desiredHeading + 180) % 360 - 100));
 
             double powerCoefficient = ((1.0 / 180) * theoreticalSpeed);
 
             double speed = dTheta * powerCoefficient + realMinSpeed;
-
+        */
     }
 
     //vuforia

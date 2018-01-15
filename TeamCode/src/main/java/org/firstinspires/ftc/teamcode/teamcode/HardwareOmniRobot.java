@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.teamcode;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
 import com.qualcomm.robotcore.hardware.AnalogInput;
@@ -12,6 +13,10 @@ import com.qualcomm.robotcore.hardware.I2cAddr;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.RobotLog;
+
+import org.firstinspires.ftc.robotcore.external.navigation.Position;
+import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
+
 import java.text.DecimalFormat;
 
 /**
@@ -35,10 +40,10 @@ public class HardwareOmniRobot
 
     ColorSensor jkcolor, jkcolor2, dumperColor;
 
-    ModernRoboticsI2cGyro gyro;
-    //BNO055IMU imu;
+    ModernRoboticsI2cGyro gyro, gyro2;
+    BNO055IMU imu;
 
-    //ModernRoboticsI2cRangeSensor ultra_right, ultra_left,ultra_back;
+    ModernRoboticsI2cRangeSensor ultra_backMR, ultra_backMR2;
 
     public final int GRABBER_AUTOPOS = 1395;
     public final double JKUP = 0.8;
@@ -173,18 +178,23 @@ public class HardwareOmniRobot
 
         if(rungyro == true) {
             BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-            parameters.loggingEnabled = true;
-            parameters.loggingTag     = "IMU";
-            //parameters.mode = BNO055IMU.SensorMode.AMG;
-            parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
-            imu = hwMap.get(BNO055IMU.class, "imu");
-            imu.initialize(parameters);
+            parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
+            parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+            parameters.calibrationDataFile = "AdafruitIMUCalibration.json"; // see the calibration sample opmode
+            parameters.loggingEnabled      = true;
+            parameters.loggingTag          = "IMU";
+            parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
+
+            // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
+            // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
+            // and named "imu".
+            this.imu = hwMap.get(BNO055IMU.class, "imu");
+            this.imu.initialize(parameters);
+            imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
 
 
-
-            gyro = hwMap.get(ModernRoboticsI2cGyro.class, "gyro");
-            gyro.calibrate();
         }
+
 
     }
 
