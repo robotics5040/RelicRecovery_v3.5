@@ -39,8 +39,8 @@ public class PID {
         return (System.currentTimeMillis() - time + 1) / 1000;
     }
 
-    public double update(double value){
-        double currentError = setPoint - value;
+    public double update(double heading){
+        double currentError = setPoint - heading;
 
         i_error += currentError * secondsElapsed();
         double errorDifference = currentError - error;

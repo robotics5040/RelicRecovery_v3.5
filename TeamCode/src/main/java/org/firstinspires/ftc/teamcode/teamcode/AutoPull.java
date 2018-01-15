@@ -132,9 +132,9 @@ public class AutoPull extends LinearOpMode {
 
     //rotates to degree. goes from 0 to 359
     public void RotateTo(HardwareOmniRobot robot, int degrees, int gyro) {
-        double p = 0.05;
-        double i = 0.005;
-        double d = 0.0025;
+        double p = 0.02;
+        double i = 0.00;
+        double d = 0.00;
 
         PID pid = new PID(p, i, d);
         pid.setSetPoint(degrees);
@@ -142,7 +142,9 @@ public class AutoPull extends LinearOpMode {
         while(opModeIsActive()){
             double heading = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
             double power = pid.update(heading);
-            power = Range.clip(power, -0.5, 0.5);
+            power = Range.clip(power, -1.0, 1.0);
+            telemetry.addData("speed", power);
+            telemetry.update();
 
             robot.onmiDrive(0.0, 0.0, power);
 
@@ -155,14 +157,6 @@ public class AutoPull extends LinearOpMode {
         }
 
     }
-
-
-
-
-
-
-
-
 
     public void rotateBy(HardwareOmniRobot robot, int degrees,int gyro){
         float heading = robot.gyro.getHeading()-gyro;
