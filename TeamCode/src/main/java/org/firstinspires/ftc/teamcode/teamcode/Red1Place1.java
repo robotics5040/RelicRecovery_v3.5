@@ -54,7 +54,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Omnibot: Red1Place1", group="Omnibot")
+@Autonomous(name="Omnibot: Red1Place1_dupe", group="Omnibot")
 //@Disabled
 public class Red1Place1 extends AutoPull {
 

@@ -108,8 +108,8 @@ public class OmniBot_Iterative extends OpMode{
      */
     @Override
     public void loop() {
-        double left_stick_x, left_stick_y,right_stick_x,right_stick_y,power, left_trigger, right_trigger1,LX,RX,rotate=0,front=0,side=0;
-        boolean NavXTemp, b_button1,a_button1,y_button1,x_button1,left_bumper, right_bumper, a_button, b_button, x_button, y_button,dup,ddown,dleft,dright,left_bump1,right_bump1, d_up1,d_down1,d_left1,d_right1,stick_press, stick_press1;
+        double left_stick_x, left_stick_y,right_stick_x,right_stick_y,power, left_trigger, right_trigger1,LX,RX,rotate=0,front=0,side=0, left_stick_y_2, right_stick_y_2;
+        boolean NavXTemp, b_button1,a_button1,y_button1,x_button1,left_bumper, right_bumper, a_button, b_button, x_button, y_button,dup,ddown,dleft,dright,left_bump1,right_bump1, d_up1,d_down1,d_left1,d_right1,stick_press, stick_press1, a2;
 
 
         //note: The joystick goes negative when pushed forwards, so negate it)
@@ -117,6 +117,10 @@ public class OmniBot_Iterative extends OpMode{
         left_stick_y = gamepad1.left_stick_y;
         right_stick_x = gamepad1.right_stick_x;
         right_stick_y = gamepad1.right_stick_y;
+
+        left_stick_y_2 = gamepad2.left_stick_y;
+        right_stick_y_2 = gamepad2.right_stick_y;
+        a2 = gamepad2.a;
 
         NavXTemp = gamepad1.left_stick_button;
         left_bumper = gamepad2.left_bumper;
@@ -214,15 +218,13 @@ public class OmniBot_Iterative extends OpMode{
             robot.grabber.setTargetPosition(up);
             done = true;
             up +=10;
-        }
-        else if(ddown == true) {
+        } else if(ddown == true) {
             robot.grabber.setPower(0.75);
             robot.grabber.setTargetPosition(-1*up);
             done = true;
             up +=10;
 
-        }
-        else if(done == true) {
+        } else if(done == true) {
             up = 10;
             robot.grabber.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             robot.grabber.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -284,12 +286,17 @@ public class OmniBot_Iterative extends OpMode{
             robot.claw2.setPosition(0.45);
         }
 
+        robot.relicArm(left_stick_y_2, right_stick_y_2, a2);
+
         // Send telemetry message to signify robot running;
         telemetry.addLine("Controller Telemetry:");
         telemetry.addData("Left Bumper: ", left_bumper);
         telemetry.addData("Right Bumper: ", right_bumper );
         telemetry.addData("Left Trigger: ", left_trigger);
         telemetry.addData("Right Trigger: ", right_trigger1);
+        telemetry.addData("2nd Left Joystick: ", left_stick_y_2);
+        telemetry.addData("2nd Right Joystick: ", right_stick_y_2);
+        telemetry.addData("Relic Wrist Position: ", robot.relicWrist.getPosition());
         telemetry.addData("A Button: ",a_button);
         telemetry.addData("B Button: ",b_button);
         telemetry.addData("X Button: ",x_button);

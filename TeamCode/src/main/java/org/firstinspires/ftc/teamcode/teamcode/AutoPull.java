@@ -130,52 +130,42 @@ public class AutoPull extends LinearOpMode {
     }
 
     //rotates to degree. goes from 0 to 359
-    public void rotateTo(HardwareOmniRobot robot,int degrees,int gyro) {
-        float heading = robot.gyro.getHeading()-gyro;
-        double output, error, lastError = 0;
-        double goal  = degrees;
-        double speed = 0.5;
-        double gain  = 0.01;
-        //double tau_i = 2;
+    public void RotateTo(HardwareOmniRobot robot, int degrees, int gyro) {
+        double p;
+        double i;
+        double d;
 
-        while(heading != Math.abs(goal - 1) && opModeIsActive()){
-            heading = robot.gyro.getHeading()-gyro;
-            error = goal - heading;
-            speed = (gain * error) + 0.05;
-            if(speed < 0.3){
-                speed = (0.027 * error);
-            }
-            /*telemetry.addData("Heading", heading);
-            telemetry.addData("Error", error);
-            telemetry.addData("speed", speed);
-            telemetry.update();*/
-            onmiDrive(robot, 0.0, 0.0, speed);
-            //lastError = error;
+        PID pid = new PID(p, i, d);
+        pid.setSetPoint(degrees);
+        while(opModeIsActive() && ){
+            double heading = robot.;
+            pid.update();
         }
+
     }
+
+
+
+
+
+
+
+
 
     public void rotateBy(HardwareOmniRobot robot, int degrees,int gyro){
         float heading = robot.gyro.getHeading()-gyro;
-        double output, error, lastError = 0;
-        double goal  = degrees + heading;
-        double speed = 0.5;
-        double gain  = 0.01;
-        //double tau_i = 2;
+        /*TRAVIS'S 'POOR MAN'S PID*/
+            double realMinSpeed = 0.29;
+            double realMaxSpeed = 1.0;
 
-        while(heading != Math.abs(goal - 1) && opModeIsActive() ){
-            heading = robot.gyro.getHeading()-gyro;
-            error = goal - heading;
-            speed = (gain * error) + 0.05;
-            if(speed < 0.3){
-                speed = (0.027 * error);
-            }
-            /*telemetry.addData("Heading", heading);
-            telemetry.addData("Error", error);
-            telemetry.addData("speed", speed);
-            telemetry.update();*/
-            onmiDrive(robot, 0.0, 0.0, speed);
-            //lastError = error;
-        }
+            double theoreticalSpeed = realMaxSpeed - realMinSpeed;
+
+            int dTheta = Math.abs((currentHeading - desiredHeading + 180) % 360 - 100));
+
+            double powerCoefficient = ((1.0 / 180) * theoreticalSpeed);
+
+            double speed = dTheta * powerCoefficient + realMinSpeed;
+
     }
 
     //vuforia

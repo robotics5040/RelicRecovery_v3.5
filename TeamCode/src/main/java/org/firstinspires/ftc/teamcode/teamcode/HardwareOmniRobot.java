@@ -35,11 +35,10 @@ public class HardwareOmniRobot
 
     ColorSensor jkcolor, jkcolor2, dumperColor;
 
-    ModernRoboticsI2cGyro gyro, gyro2;
-    BNO055IMU imu;
+    ModernRoboticsI2cGyro gyro;
+    //BNO055IMU imu;
 
     //ModernRoboticsI2cRangeSensor ultra_right, ultra_left,ultra_back;
-    ModernRoboticsI2cRangeSensor ultra_backMR, ultra_backMR2;
 
     public final int GRABBER_AUTOPOS = 1395;
     public final double JKUP = 0.8;
@@ -53,6 +52,11 @@ public class HardwareOmniRobot
     public DcMotor leftMotor2 = null;
     public DcMotor rightMotor1 = null;
     public DcMotor rightMotor2 = null;
+
+    public DcMotor relicMotor = null;
+    public Servo relicWrist   = null;
+    public Servo relicClaw    = null;
+
     public DcMotor wheelie = null;
     public DcMotor grabber = null;
     public Servo jknock = null;
@@ -104,17 +108,25 @@ public class HardwareOmniRobot
         claw2 = hwMap.servo.get("claw_2");
         jknock = hwMap.servo.get("jknock");
         flexServo = hwMap.servo.get("flex");
-        glyphStop = hwMap.servo.get("glyphStop");
         jkcolor = hwMap.get(ColorSensor.class, "color_sense");
         jkcolor2 = hwMap.get(ColorSensor.class, "color");
-        dumperColor = hwMap.get(ColorSensor.class, "dumperColor");
         RobotLog.ii("5040MSGHW","Everything but ultras gotten");
 
         jkcolor2.setI2cAddress(I2cAddr.create8bit(0x28));
-        dumperColor.setI2cAddress(I2cAddr.create8bit(0x26));
 
         ultra_backMR = hwMap.get(ModernRoboticsI2cRangeSensor.class, "ultra_backMR");
         ultra_backMR2 = hwMap.get(ModernRoboticsI2cRangeSensor.class, "ultra_backMR2");
+        relicMotor = hwMap.dcMotor.get("relic_motor");
+        relicMotor.setDirection(DcMotor.Direction.REVERSE);
+        relicMotor.setPower(0.0);
+        relicMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        relicMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        relicWrist = hwMap.get(Servo.class, "relic_wrist");
+        relicWrist.setPosition(0.0);
+        relicClaw = hwMap.get(Servo.class, "relic_claw");
+        relicClaw.setPosition(0.0);
+
+        //ultra_back = hwMap.get(ModernRoboticsI2cRangeSensor.class, "ultra_back");
         //ultra_left = hwMap.get(ModernRoboticsI2cRangeSensor.class, "ultra_left");
         //ultra_right = hwMap.get(ModernRoboticsI2cRangeSensor.class, "ultra_right");
 
@@ -154,6 +166,9 @@ public class HardwareOmniRobot
         claw2.setPosition(1.0);
         jewelGrab.setPosition(0.19);
         dumper.setPower(0);
+        relicClaw.setPosition(0.5);
+        relicWrist.setPosition(0.0);
+        relicWrist.setPosition(0.94);
         flexServo.setPosition(0.196);        //out to 90 -- 0.82
 
         if(rungyro == true) {
@@ -169,8 +184,6 @@ public class HardwareOmniRobot
 
             gyro = hwMap.get(ModernRoboticsI2cGyro.class, "gyro");
             gyro.calibrate();
-            gyro2 = hwMap.get(ModernRoboticsI2cGyro.class, "gyro2");
-            gyro2.calibrate();
         }
 
     }
@@ -215,6 +228,79 @@ public class HardwareOmniRobot
             RobotLog.ee(MESSAGETAG, e.getStackTrace().toString());
         }
     }
+
+    public void relicArm (double ljoystick, double rjoystick, boolean a){
+        int relicMotorPosition = relicMotor.getCurrentPosition();
+        int newRelicMotorPosition = relicMotorPosition;
+
+        double rwCurrent = relicWrist.getPosition(), rwGoal = rwCurrent;
+
+        double power = 0.5;
+        final int RELIC_OUT = 4800; // Minimum Value to Prevent Over Extension
+        final int RELIC_IN  = 0;
+
+        if(ljoystick > 0.1){
+            newRelicMotorPosition = RELIC_OUT;
+        }else if(ljoystick < -0.1){
+            newRelicMotorPosition = RELIC_IN;
+        }else{
+            newRelicMotorPosition = relicMotorPosition;
+        }
+
+        if(rjoystick > 0.1){
+            rwGoal = rwCurrent += 0.1;
+        }else if(rjoystick < -0.1){
+            rwGoal = rwCurrent -= 0.1;
+        }
+        if(rwGoal > 1.0){
+            rwGoal = 1.0;
+        }else if(rwGoal < 0.0){
+            rwGoal = 0.0;
+        }
+
+        relicWrist.setPosition(rwGoal);
+
+        /*
+        if(rjoystick > -0.1){
+            if(rwCurrent + 0.05 <= 1.0){
+                rwGoal = rwCurrent + 0.05;
+            }
+        }else if(rjoystick > 0.1) {
+            if (rwCurrent - 0.05 >= 0) {
+                rwGoal = rwCurrent - 0.05;
+            }
+        }
+        */
+
+        relicMotor.setTargetPosition(newRelicMotorPosition);
+        relicMotorPosition = relicMotor.getCurrentPosition();
+        power = Math.abs(ljoystick);
+
+        if(power < 0.4){
+            power = 0.4;
+        }
+
+        //relicMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        //telemetry.addData("Right Joystick Value", joystick);
+        //telemetry.addData("Motor Target Position", newRelicMotorPosition);
+        //telemetry.addData("Motor Power Value", power);
+
+        /*if(relicMotor.isBusy()) {
+            relicMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            relicMotor.setPower(power);
+        }else{
+            //relicMotor.setPower();
+            relicMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            relicMotor.setTargetPosition(relicMotor.getCurrentPosition());
+        }*/
+
+        relicMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        relicMotor.setPower(power);
+
+        //relicWrist.setPosition(rwGoal);
+        //waitForTick(50);
+    }
+
 
 
 
