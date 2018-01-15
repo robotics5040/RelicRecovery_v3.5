@@ -202,6 +202,7 @@ public class HardwareOmniRobot
 
             //Move the claw back to a semi-open position
             claw2.setPosition(0.9);
+            relicClaw.setPosition(0.35);
             //The robot is now initialized within 18 inches!
         }
     }

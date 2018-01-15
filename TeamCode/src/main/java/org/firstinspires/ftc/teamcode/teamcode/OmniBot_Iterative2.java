@@ -307,20 +307,20 @@ public class OmniBot_Iterative2 extends OpMode{
 
         double rwCurrent = robot.relicWrist.getPosition(), rwGoal = rwCurrent;
 
-        double power = 0.5;
-        final int RELIC_OUT = 2800; // Minimum Value to Prevent Over Extension
+        double power = 1.0;
+        final int RELIC_OUT = 2750; // Minimum Value to Prevent Over Extension
         final int RELIC_IN  = 0;
         double SERVO_INCREMENT = 0.04, decay = 0.008;
 
-        if(left_stick_y_2 < -0.1 && robot.relicMotor.getCurrentPosition() < RELIC_OUT - 500){
-            telemetry.addLine("In the Relic Slide if");
+        if(right_stick_y_2 < -0.1 && robot.relicMotor.getCurrentPosition() < RELIC_OUT){
+            //telemetry.addLine("In the Relic Slide if");
             robot.relicStopper.setPosition(0.19);
             newRelicMotorPosition = RELIC_OUT;
-        }else if(left_stick_y_2 > 0.1){
-            telemetry.addLine("In the Relic Slide if else");
+        }else if(right_stick_y_2 > 0.1){
+            //telemetry.addLine("In the Relic Slide if else");
             newRelicMotorPosition = RELIC_IN;
         }else{
-            telemetry.addLine("Not in if");
+            //telemetry.addLine("Not in if");
             newRelicMotorPosition = relicMotorPosition;
         }
 
@@ -328,10 +328,10 @@ public class OmniBot_Iterative2 extends OpMode{
             SERVO_INCREMENT = 0.01;
         }
 
-        if(right_stick_y_2 < -0.1){
+        if(left_stick_y_2 < -0.1){
             rwGoal = rwCurrent + SERVO_INCREMENT;
             //SERVO_INCREMENT -= decay;
-        }else if(right_stick_y_2 > 0.1){
+        }else if(left_stick_y_2 > 0.1){
             rwGoal = rwCurrent - SERVO_INCREMENT;
             //SERVO_INCREMENT += decay;
         }
@@ -359,14 +359,19 @@ public class OmniBot_Iterative2 extends OpMode{
         newRelicMotorPosition = Range.clip(newRelicMotorPosition, RELIC_IN, RELIC_OUT);
         robot.relicMotor.setTargetPosition(newRelicMotorPosition);
         relicMotorPosition = robot.relicMotor.getCurrentPosition();
-        power = Math.abs(left_stick_y_2);
-
-        if(power < 0.4){
-            power = 0.4;
-        }
 
         robot.relicMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.relicMotor.setPower(power);
+
+        /*
+        if(robot.relicMotor.isBusy()) {
+            robot.relicMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.relicMotor.setPower(power);
+        }else{
+            robot.relicMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.relicMotor.setPower(0.0);
+        }
+        */
 
         //robot.relicArm(left_stick_y_2, right_stick_y_2, a_button_2);
 
