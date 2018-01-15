@@ -121,15 +121,13 @@ public class HardwareOmniRobot
 
         ultra_backMR = hwMap.get(ModernRoboticsI2cRangeSensor.class, "ultra_backMR");
         ultra_backMR2 = hwMap.get(ModernRoboticsI2cRangeSensor.class, "ultra_backMR2");
+
         relicMotor = hwMap.dcMotor.get("relic_motor");
         relicMotor.setDirection(DcMotor.Direction.REVERSE);
-        relicMotor.setPower(0.0);
         relicMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         relicMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         relicWrist = hwMap.get(Servo.class, "relic_wrist");
-        relicWrist.setPosition(0.0);
         relicClaw = hwMap.get(Servo.class, "relic_claw");
-        relicClaw.setPosition(0.0);
 
         //ultra_back = hwMap.get(ModernRoboticsI2cRangeSensor.class, "ultra_back");
         //ultra_left = hwMap.get(ModernRoboticsI2cRangeSensor.class, "ultra_left");
@@ -171,8 +169,7 @@ public class HardwareOmniRobot
         claw2.setPosition(1.0);
         jewelGrab.setPosition(0.19);
         dumper.setPower(0);
-        relicClaw.setPosition(0.5);
-        relicWrist.setPosition(0.0);
+        relicClaw.setPosition(0.0);
         relicWrist.setPosition(0.94);
         flexServo.setPosition(0.196);        //out to 90 -- 0.82
 
@@ -191,8 +188,6 @@ public class HardwareOmniRobot
             this.imu = hwMap.get(BNO055IMU.class, "imu");
             this.imu.initialize(parameters);
             imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
-
-
         }
 
 
