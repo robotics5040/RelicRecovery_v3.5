@@ -132,12 +132,12 @@ public class AutoPull extends LinearOpMode {
 
     //rotates to degree. goes from -180 to 180
     public void RotateTo(HardwareOmniRobot robot, int degrees, int gyro) {
-        double p = 0.009999999999;
+        double p = 0.00999;
 
-        if(Math.abs(degrees) == 90 && gyro == 0) {
+        /*if(Math.abs(degrees) == 90 && gyro == 0) {
             p = 0.015;
-        }
-        double i = 0.00;
+        }*/
+        double i = 0.000001;
         double d = 0.00;
 
         PID pid = new PID(p, i, d);
@@ -148,18 +148,19 @@ public class AutoPull extends LinearOpMode {
             double power = pid.update(heading);
             power = Range.clip(power, -1.0, 1.0);
             telemetry.addData("speed", power);
-            telemetry.update();
+            //telemetry.update();
 
             robot.onmiDrive(0.0, 0.0, power);
 
-            if(Math.abs(heading - degrees) < 5.0){
+            if(Math.abs(heading - degrees) < 3.0){
                 break;
             }
 
             telemetry.addData("Heading: ", heading);
+            telemetry.addData("Goal: ", degrees);
             telemetry.update();
         }
-
+        robot.onmiDrive(0.0, 0.0, 0);
     }
 
     public void rotateBy(HardwareOmniRobot robot, int degrees,int gyro){
