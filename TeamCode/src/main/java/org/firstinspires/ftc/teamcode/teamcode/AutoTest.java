@@ -83,7 +83,7 @@ public class AutoTest extends AutoPull {
 
         telemetry.addLine("waiting for start");
         telemetry.update();
-
+        //channe
         /*while (!(isStarted() || isStopRequested())) {
             telemetry.addData("calibrated?", imu.isSystemCalibrated());
             telemetry.addData("calibrated?gyro ", imu.isGyroCalibrated());
