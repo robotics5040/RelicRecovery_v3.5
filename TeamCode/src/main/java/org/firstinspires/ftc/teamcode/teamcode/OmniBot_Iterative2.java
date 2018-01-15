@@ -312,11 +312,15 @@ public class OmniBot_Iterative2 extends OpMode{
         final int RELIC_IN  = 0;
         double SERVO_INCREMENT = 0.04, decay = 0.008;
 
-        if(left_stick_y_2 < -0.1 && robot.relicMotor.getCurrentPosition() < RELIC_OUT){
+        if(left_stick_y_2 < -0.1 && robot.relicMotor.getCurrentPosition() < RELIC_OUT - 500){
+            telemetry.addLine("In the Relic Slide if");
+            robot.relicStopper.setPosition(0.19);
             newRelicMotorPosition = RELIC_OUT;
         }else if(left_stick_y_2 > 0.1){
+            telemetry.addLine("In the Relic Slide if else");
             newRelicMotorPosition = RELIC_IN;
         }else{
+            telemetry.addLine("Not in if");
             newRelicMotorPosition = relicMotorPosition;
         }
 

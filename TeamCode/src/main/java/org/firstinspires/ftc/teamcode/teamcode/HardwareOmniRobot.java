@@ -61,6 +61,7 @@ public class HardwareOmniRobot
     public DcMotor relicMotor = null;
     public Servo relicWrist   = null;
     public Servo relicClaw    = null;
+    public Servo relicStopper = null;
 
     public DcMotor wheelie = null;
     public DcMotor grabber = null;
@@ -128,6 +129,7 @@ public class HardwareOmniRobot
         relicMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         relicWrist = hwMap.get(Servo.class, "relic_wrist");
         relicClaw = hwMap.get(Servo.class, "relic_claw");
+        relicStopper = hwMap.get(Servo.class, "extension_stopper");
 
         //ultra_back = hwMap.get(ModernRoboticsI2cRangeSensor.class, "ultra_back");
         //ultra_left = hwMap.get(ModernRoboticsI2cRangeSensor.class, "ultra_left");
@@ -171,6 +173,7 @@ public class HardwareOmniRobot
         dumper.setPower(0);
         relicClaw.setPosition(0.0);
         relicWrist.setPosition(0.94);
+        relicStopper.setPosition(0.98);
         flexServo.setPosition(0.196);        //out to 90 -- 0.82
         RobotLog.ii("5040MSGHW", "Everything Initialized Correctly");
 
