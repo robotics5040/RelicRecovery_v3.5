@@ -4,6 +4,7 @@ import com.kauailabs.navx.ftc.navXPIDController;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.RobotLog;
@@ -129,28 +130,32 @@ public class AutoPull extends LinearOpMode {
         if(robot.jknock.getPosition() != robot.JKUP) {robot.jknock.setPosition(robot.JKUP);}
     }
 
+    //gets both gyros to average the reading
+    public int getGyro(HardwareOmniRobot robot) {
+        return (robot.gyro.getHeading() + robot.gyro2.getHeading())/2;
+    }
     //rotates to degree. goes from 0 to 359
-    public void rotateTo(HardwareOmniRobot robot,int degrees,int gyro) {
-        float heading = robot.gyro.getHeading()-gyro;
-        double output, error, lastError = 0;
-        double goal  = degrees;
+    public void RotateTo(HardwareOmniRobot robot,int degrees,int gyro) {
+        float heading = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;//getGyro(robot) - gyro;
         double speed = 0.5;
-        double gain  = 0.01;
-        //double tau_i = 2;
+        boolean go = false;
 
-        while(heading != Math.abs(goal - 1) && opModeIsActive()){
-            heading = robot.gyro.getHeading()-gyro;
-            error = goal - heading;
-            speed = (gain * error) + 0.05;
-            if(speed < 0.3){
-                speed = (0.027 * error);
+        runtime.reset();
+        while (heading != degrees && opModeIsActive() && runtime.seconds() < 3) {
+            telemetry.addData("HEADING", heading);
+            telemetry.update();
+            heading = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;//robot.gyro.getHeading() - gyro;
+            if (degrees-1 < heading) {
+                onmiDrive(robot, 0.0, 0.0, -speed);
+                go = true;
+            } else if (degrees+1 > heading) {
+                onmiDrive(robot, 0.0, 0.0, speed);
+                if (speed > 0.4 && go == true) {
+                    speed -= 0.01;
+                }
+            } else {
+                onmiDrive(robot, 0.0, 0.0, 0.0);
             }
-            /*telemetry.addData("Heading", heading);
-            telemetry.addData("Error", error);
-            telemetry.addData("speed", speed);
-            telemetry.update();*/
-            onmiDrive(robot, 0.0, 0.0, speed);
-            //lastError = error;
         }
     }
 
@@ -238,6 +243,32 @@ public class AutoPull extends LinearOpMode {
         }
         flexPrevious = flexCurrent;
         return columnNum;
+    }
+
+    public void stopDriveTrain(HardwareOmniRobot robot) {
+        robot.leftMotor1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.leftMotor1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.leftMotor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.leftMotor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.rightMotor1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.rightMotor1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.rightMotor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.rightMotor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        robot.leftMotor1.setTargetPosition(0);
+        robot.leftMotor2.setTargetPosition(0);
+        robot.rightMotor1.setTargetPosition(0);
+        robot.rightMotor2.setTargetPosition(0);
+
+        robot.leftMotor1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        robot.leftMotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        robot.rightMotor1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        robot.rightMotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        robot.leftMotor1.setDirection(DcMotor.Direction.FORWARD);
+        robot.leftMotor2.setDirection(DcMotor.Direction.FORWARD);
+        robot.rightMotor1.setDirection(DcMotor.Direction.FORWARD);
+        robot.rightMotor2.setDirection(DcMotor.Direction.FORWARD);
     }
 }
 

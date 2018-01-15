@@ -26,6 +26,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package org.firstinspires.ftc.teamcode.teamcode;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -58,6 +59,9 @@ public class OmniBot_Iterative2 extends OpMode{
     public int  pressed = 0,up=10;
     double wrist_num = 0;
     boolean there=true,run =false,done=false,aPressed=true,bPressed=false,xPressed=false,yPressed=false,closed = true;
+
+    BNO055IMU imu;
+
     ElapsedTime runtime = new ElapsedTime();
     /* Declare OpMode members. */
     private HardwareOmniRobot robot; // use the class created to define a Pushbot's hardware
@@ -218,12 +222,12 @@ public class OmniBot_Iterative2 extends OpMode{
             there = true;
             run = false;
         }
-        else if(dup == true) {
+        else if(ddown == true) {
             robot.grabber.setPower(0.2);
             robot.grabber.setTargetPosition(-1500);
             done = true;
         }
-        else if(ddown == true) {
+        else if(dup == true) {
             robot.grabber.setPower(0.2);
             robot.grabber.setTargetPosition(1500);
             done = true;
@@ -321,6 +325,7 @@ public class OmniBot_Iterative2 extends OpMode{
         telemetry.addData("Ultra Right ", ((robot.ultra_right.getVoltage() / 5) * 512) + 2.5);
         telemetry.addLine("What is my name?: Spitz");
         telemetry.addData("rotate",rotate);
+
 
     }
 

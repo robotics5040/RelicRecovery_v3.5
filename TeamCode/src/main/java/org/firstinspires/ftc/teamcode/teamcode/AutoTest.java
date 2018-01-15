@@ -90,7 +90,6 @@ public class AutoTest extends AutoPull {
             telemetry.addData("calibrated?accel ", imu.isAccelerometerCalibrated());
             telemetry.update();
         }
-
         robot.grabber.setPower(0.4);
 
         imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
